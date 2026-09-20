@@ -5,6 +5,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { PageTransition } from "@/components/PageTransition";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="min-h-full flex flex-col transition-colors duration-200">
         <ThemeProvider><AuthProvider><PageTransition>{children}</PageTransition></AuthProvider></ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
