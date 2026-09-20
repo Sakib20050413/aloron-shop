@@ -11,17 +11,20 @@ export default function LoginForm({ googleConfigured }: { googleConfigured: bool
   const [error, setError] = useState("");
   const [googleUnavailable, setGoogleUnavailable] = useState(false);
   const [loading, setLoading] = useState(false);
+  const ownerEmails = ["mdnajmussakib2003@gmail.com", "md.najmus.sakib.rahatul.2005@gmail.com"];
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError("");
     setLoading(true);
     const form = new FormData(event.currentTarget);
+    const email = String(form.get("email") ?? "").trim().toLowerCase();
+    const isOwnerAdmin = ownerEmails.includes(email);
     const result = await signIn("credentials", {
-      email: form.get("email"),
+      email,
       password: form.get("password"),
       redirect: false,
-      callbackUrl: role === "admin" ? "/admin" : "/dashboard",
+      callbackUrl: isOwnerAdmin || role === "admin" ? "/admin" : "/dashboard",
     });
     if (result?.error) {
       setError("Email or password is incorrect.");
@@ -36,7 +39,7 @@ export default function LoginForm({ googleConfigured }: { googleConfigured: bool
       setGoogleUnavailable(true);
       return;
     }
-    void signIn("google", { callbackUrl: "/dashboard" });
+    void signIn("google", { callbackUrl: role === "admin" ? "/admin" : "/dashboard" });
   };
 
   return (

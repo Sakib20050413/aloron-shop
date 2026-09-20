@@ -15,6 +15,15 @@ function isOwnerAdminEmail(email: string | null | undefined) {
   return Boolean(email && OWNER_ADMIN_EMAILS.has(email.trim().toLowerCase()));
 }
 
+async function enforceOwnerAdmin(email: string | null | undefined) {
+  if (!email || !isOwnerAdminEmail(email)) return false;
+  await prisma.user.updateMany({
+    where: { email: email.trim().toLowerCase() },
+    data: { role: "ADMIN" },
+  });
+  return true;
+}
+
 const credentialsSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
@@ -93,13 +102,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.email = user.email;
+      }
+      const ownerEmail = token.email ?? user?.email;
+      if (isOwnerAdminEmail(ownerEmail)) {
+        await enforceOwnerAdmin(ownerEmail);
+        token.role = "ADMIN";
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = isOwnerAdminEmail(session.user.email) ? "ADMIN" : token.role as "CUSTOMER" | "ADMIN";
+        const ownerEmail = token.email ?? session.user.email;
+        if (isOwnerAdminEmail(ownerEmail)) {
+          await enforceOwnerAdmin(ownerEmail);
+          session.user.role = "ADMIN";
+        } else {
+          session.user.role = token.role as "CUSTOMER" | "ADMIN";
+        }
       }
       return session;
     },
