@@ -59,8 +59,11 @@ const products = [
 ];
 
 async function main() {
-  const adminEmail = (process.env.ADMIN_EMAIL ?? "admin@aloron.shop").toLowerCase();
-  const adminPassword = "admin123";
+  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  if (!adminEmail || !adminPassword || adminPassword.length < 12) {
+    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD (minimum 12 characters) are required to seed an admin account.");
+  }
   const passwordHash = await bcrypt.hash(adminPassword, 12);
 
   await prisma.user.upsert({

@@ -32,33 +32,6 @@ const providers: Provider[] = [
       if (!parsed.success) return null;
 
       const email = parsed.data.email.toLowerCase();
-      if (
-        (email === "admin@aloron.shop" || email === "admin@aloron.com") &&
-        parsed.data.password === "admin123"
-      ) {
-        return {
-          id: "admin-demo",
-          email,
-          name: "Aloron Demo Admin",
-          role: "ADMIN" as const,
-        };
-      }
-
-      if (email === "customer@aloron.shop" && parsed.data.password === "aloron-demo-2026") {
-        const demoCustomer = await prisma.user.upsert({
-          where: { email },
-          update: { name: "Aloron Demo Customer", role: "CUSTOMER" },
-          create: { email, name: "Aloron Demo Customer", role: "CUSTOMER" },
-        });
-        return {
-          id: demoCustomer.id,
-          email: demoCustomer.email,
-          name: demoCustomer.name,
-          image: demoCustomer.image,
-          role: demoCustomer.role,
-        };
-      }
-
       const user = await prisma.user.findUnique({ where: { email } });
       if (!user?.passwordHash) return null;
 
