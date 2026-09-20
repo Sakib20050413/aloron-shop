@@ -1,0 +1,87 @@
+"use server";
+
+import { auth } from "@/auth";
+import { prisma } from "@/lib/prisma";
+
+export type AdminCustomerOrder = {
+  id: string;
+  orderNumber: string;
+  totalAmount: number;
+  advanceAmount: number;
+  paymentStatus: string;
+  orderStatus: string;
+  shippingAddress: string;
+  notes: string | null;
+  createdAt: string;
+  items: { quantity: number; unitPrice: number; productName: string }[];
+};
+
+export type AdminCustomer = {
+  id: string;
+  name: string;
+  email: string | null;
+  phone: string;
+  address: string | null;
+  city: string | null;
+  createdAt: string;
+  orders: AdminCustomerOrder[];
+};
+
+type CustomerResult = { success: true; customers: AdminCustomer[] } | { success: false; error: string };
+
+export async function getAdminCustomers(): Promise<CustomerResult> {
+  const session = await auth();
+  if (session?.user?.role !== "ADMIN") return { success: false, error: "FORBIDDEN" };
+
+  const users = await prisma.user.findMany({
+    where: { role: "CUSTOMER" },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      address: true,
+      city: true,
+      createdAt: true,
+      orders: {
+        orderBy: { createdAt: "desc" },
+        select: {
+          id: true,
+          orderNumber: true,
+          totalAmount: true,
+          advanceAmount: true,
+          paymentStatus: true,
+          orderStatus: true,
+          shippingAddress: true,
+          notes: true,
+          createdAt: true,
+          items: { select: { quantity: true, unitPrice: true, product: { select: { name: true } } } },
+        },
+      },
+    },
+  });
+
+  const customers = users.map((user) => ({
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    phone: user.phone ?? "—",
+    address: user.address,
+    city: user.city,
+    createdAt: user.createdAt.toISOString(),
+    orders: user.orders.map((order) => ({
+      id: order.id,
+      orderNumber: order.orderNumber,
+      totalAmount: Number(order.totalAmount),
+      advanceAmount: Number(order.advanceAmount),
+      paymentStatus: order.paymentStatus,
+      orderStatus: order.orderStatus,
+      shippingAddress: order.shippingAddress,
+      notes: order.notes,
+      createdAt: order.createdAt.toISOString(),
+      items: order.items.map((item) => ({ quantity: item.quantity, unitPrice: Number(item.unitPrice), productName: item.product.name })),
+    })),
+  }));
+
+  return { success: true, customers };
+}

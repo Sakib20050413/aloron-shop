@@ -1,0 +1,117 @@
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
+import type { Provider } from "next-auth/providers";
+import bcrypt from "bcryptjs";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+
+const credentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+// Keep the conventional names canonical; AUTH_GOOGLE_* remain supported for compatibility.
+const googleClientId = process.env.GOOGLE_CLIENT_ID ?? process.env.AUTH_GOOGLE_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET ?? process.env.AUTH_GOOGLE_SECRET;
+const hasGoogleCredentials =
+  Boolean(googleClientId && googleClientSecret) &&
+  !/replace|your[-_ ]|placeholder/i.test(`${googleClientId} ${googleClientSecret}`);
+
+const providers: Provider[] = [
+  ...(hasGoogleCredentials
+    ? [Google({ clientId: googleClientId!, clientSecret: googleClientSecret! })]
+    : []),
+  Credentials({
+    credentials: {
+      email: { label: "Email", type: "email" },
+      password: { label: "Password", type: "password" },
+    },
+    async authorize(rawCredentials) {
+      const parsed = credentialsSchema.safeParse(rawCredentials);
+      if (!parsed.success) return null;
+
+      const email = parsed.data.email.toLowerCase();
+      if (
+        (email === "admin@aloron.shop" || email === "admin@aloron.com") &&
+        parsed.data.password === "admin123"
+      ) {
+        return {
+          id: "admin-demo",
+          email,
+          name: "Aloron Demo Admin",
+          role: "ADMIN" as const,
+        };
+      }
+
+      if (email === "customer@aloron.shop" && parsed.data.password === "aloron-demo-2026") {
+        const demoCustomer = await prisma.user.upsert({
+          where: { email },
+          update: { name: "Aloron Demo Customer", role: "CUSTOMER" },
+          create: { email, name: "Aloron Demo Customer", role: "CUSTOMER" },
+        });
+        return {
+          id: demoCustomer.id,
+          email: demoCustomer.email,
+          name: demoCustomer.name,
+          image: demoCustomer.image,
+          role: demoCustomer.role,
+        };
+      }
+
+      const user = await prisma.user.findUnique({ where: { email } });
+      if (!user?.passwordHash) return null;
+
+      const passwordMatches = await bcrypt.compare(parsed.data.password, user.passwordHash);
+      if (!passwordMatches) return null;
+
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        image: user.image,
+        role: user.role,
+      };
+    },
+  }),
+];
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+  pages: { signIn: "/login" },
+  session: { strategy: "jwt" },
+  providers,
+  callbacks: {
+    async signIn({ user, account }) {
+      if (account?.provider === "google" && user.email) {
+        const savedUser = await prisma.user.upsert({
+          where: { email: user.email.toLowerCase() },
+          update: { name: user.name ?? "Aloron customer", image: user.image },
+          create: {
+            email: user.email.toLowerCase(),
+            name: user.name ?? "Aloron customer",
+            image: user.image,
+          },
+        });
+        user.id = savedUser.id;
+        user.role = savedUser.role;
+      }
+      return true;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.role = token.role as "CUSTOMER" | "ADMIN";
+      }
+      return session;
+    },
+  },
+});
