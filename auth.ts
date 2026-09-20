@@ -6,6 +6,15 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
+export const OWNER_ADMIN_EMAILS = new Set([
+  "mdnajmussakib2003@gmail.com",
+  "md.najmus.sakib.rahatul.2005@gmail.com",
+]);
+
+function isOwnerAdminEmail(email: string | null | undefined) {
+  return Boolean(email && OWNER_ADMIN_EMAILS.has(email.trim().toLowerCase()));
+}
+
 const credentialsSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
@@ -38,12 +47,17 @@ const providers: Provider[] = [
       const passwordMatches = await bcrypt.compare(parsed.data.password, user.passwordHash);
       if (!passwordMatches) return null;
 
+      const role = isOwnerAdminEmail(email) ? "ADMIN" : user.role;
+      if (role !== user.role) {
+        await prisma.user.update({ where: { id: user.id }, data: { role } });
+      }
+
       return {
         id: user.id,
         email: user.email,
         name: user.name,
         image: user.image,
-        role: user.role,
+        role,
       };
     },
   }),
@@ -58,13 +72,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google" && user.email) {
+        const email = user.email.toLowerCase();
+        const role = isOwnerAdminEmail(email) ? "ADMIN" : undefined;
         const savedUser = await prisma.user.upsert({
-          where: { email: user.email.toLowerCase() },
-          update: { name: user.name ?? "Aloron customer", image: user.image },
+          where: { email },
+          update: { name: user.name ?? "Aloron customer", image: user.image, ...(role ? { role } : {}) },
           create: {
-            email: user.email.toLowerCase(),
+            email,
             name: user.name ?? "Aloron customer",
             image: user.image,
+            ...(role ? { role } : {}),
           },
         });
         user.id = savedUser.id;
@@ -82,7 +99,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.role = token.role as "CUSTOMER" | "ADMIN";
+        session.user.role = isOwnerAdminEmail(session.user.email) ? "ADMIN" : token.role as "CUSTOMER" | "ADMIN";
       }
       return session;
     },
