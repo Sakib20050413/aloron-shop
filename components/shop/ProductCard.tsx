@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Heart, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { CatalogProduct } from "@/lib/catalog";
+import { ImageOrIcon } from "@/components/shop/ImageOrIcon";
 
 export function ProductCard({ product }: { product: CatalogProduct }) {
   const [remaining, setRemaining] = useState(2 * 60 * 60 + 47 * 60);
@@ -20,7 +21,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   return (
     <motion.article whileHover={{ scale: 1.03, y: -6 }} whileTap={{ scale: 0.94 }} transition={{ type: "spring", stiffness: 260, damping: 20 }} style={{ perspective: 1000 }} className="group overflow-hidden rounded-2xl border border-[#eae6df] bg-[#fffdf9]/90 shadow-[0_8px_30px_rgba(60,50,40,0.04)] backdrop-blur-md transition hover:border-cyan-400/60 hover:shadow-[0_12px_32px_rgba(60,50,40,0.08)] dark:border-slate-800/80 dark:bg-slate-900/80 dark:shadow-sm">
       <div className={`relative flex aspect-[1.15] items-center justify-center bg-gradient-to-br ${product.accent}`}>
-        <motion.span whileHover={{ scale: 1.18, rotate: 8 }} className="text-7xl">{product.icon}</motion.span>
+        <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="h-[78%] w-[78%]"><ImageOrIcon src={product.images[0] ?? product.icon} alt={product.name} sizes="(max-width: 640px) 42vw, 260px" className="size-full object-contain drop-shadow-2xl" /></motion.div>
         <span className="absolute left-4 top-4 rounded-full bg-white/85 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-700">{product.category}</span>
         {product.id === "pocket-turbo-mini-fan" && <span className="absolute right-4 top-4 rounded-full bg-[#030712]/85 px-2.5 py-1 text-[10px] font-black text-cyan-200">আজকের লিমিটেড ডিল · {hours}:{minutes}:{seconds}</span>}
         <motion.span animate={{ boxShadow: ["0 0 0 0 rgba(245,158,11,.35)", "0 0 0 7px rgba(245,158,11,0)", "0 0 0 0 rgba(245,158,11,0)"] }} transition={{ duration: 2.2, repeat: Infinity }} className="absolute bottom-3 left-3 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black text-slate-950">১০% ছাড়</motion.span>

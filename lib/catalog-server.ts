@@ -18,7 +18,7 @@ export async function getStoreProducts(): Promise<CatalogProduct[]> {
       stock: product.stock,
       icon: catalogProducts[index % catalogProducts.length]?.icon ?? "📦",
       accent: catalogProducts[index % catalogProducts.length]?.accent ?? "from-cyan-100 to-blue-100",
-      images: product.images.length ? product.images : (catalogProducts[index % catalogProducts.length]?.images ?? ["📦"]),
+      images: product.images.some((image) => image.startsWith("http") || image.startsWith("/")) ? product.images : (catalogProducts[index % catalogProducts.length]?.images ?? []),
       specs: Object.fromEntries(Object.entries((product.specs as Record<string, unknown> | null) ?? {}).map(([key, value]) => [key, String(value)])),
     }));
   } catch (error) {
@@ -45,6 +45,7 @@ export async function getStoreProduct(id: string) {
       sellPrice: Number(product.sellPrice),
       originalPrice: Number(product.originalPrice),
       stock: product.stock,
+      images: product.images.some((image) => image.startsWith("http") || image.startsWith("/")) ? product.images : matchingFallback.images,
       specs: Object.fromEntries(Object.entries((product.specs as Record<string, unknown> | null) ?? {}).map(([key, value]) => [key, String(value)])),
     };
   } catch (error) {

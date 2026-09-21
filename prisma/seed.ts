@@ -14,7 +14,7 @@ const products = [
     sellPrice: 699,
     originalPrice: 799,
     stock: 24,
-    images: ["/products/mini-fan.svg"],
+    images: ["https://images.unsplash.com/photo-1583225275995-0f09b8f0b7a7?auto=format&fit=crop&w=1200&q=85"],
     specs: { battery: "2000mAh", power: "5W", warranty: "6 months", weight: "180g" },
   },
   {
@@ -27,7 +27,7 @@ const products = [
     sellPrice: 1790,
     originalPrice: 1990,
     stock: 18,
-    images: ["/products/gan-charger.svg"],
+    images: ["https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=1200&q=85"],
     specs: { ports: "2x USB-C, 1x USB-A", power: "65W", warranty: "1 year", weight: "105g" },
   },
   {
@@ -40,7 +40,7 @@ const products = [
     sellPrice: 349,
     originalPrice: 399,
     stock: 62,
-    images: ["/products/usb-c-cable.svg"],
+    images: ["https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85"],
     specs: { length: "1.8m", connector: "USB-C to USB-C", power: "100W", warranty: "6 months" },
   },
   {
@@ -53,7 +53,7 @@ const products = [
     sellPrice: 1490,
     originalPrice: 1690,
     stock: 11,
-    images: ["/products/earbuds.svg"],
+    images: ["https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1200&q=85"],
     specs: { battery: "30 hours", connectivity: "Bluetooth 5.3", warranty: "1 year", weight: "42g" },
   },
 ];

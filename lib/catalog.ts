@@ -29,7 +29,10 @@ export const catalogProducts: CatalogProduct[] = [
     stock: 24,
     icon: "🌀",
     accent: "from-cyan-100 to-blue-100",
-    images: ["🌀", "❄️", "🔋"],
+    images: [
+      "https://images.unsplash.com/photo-1583225275995-0f09b8f0b7a7?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1592496001020-d31bd830651f?auto=format&fit=crop&w=1200&q=85",
+    ],
     specs: { Battery: "2000mAh", Power: "5W", Warranty: "6 months", Weight: "180g" },
   },
   {
@@ -45,7 +48,10 @@ export const catalogProducts: CatalogProduct[] = [
     stock: 18,
     icon: "⚡",
     accent: "from-amber-100 to-orange-100",
-    images: ["⚡", "🔌", "🚀"],
+    images: [
+      "https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1609592424984-6d7f7f5f1d6c?auto=format&fit=crop&w=1200&q=85",
+    ],
     specs: { Ports: "2x USB-C, 1x USB-A", Power: "65W", Warranty: "1 year", Weight: "105g" },
   },
   {
@@ -61,7 +67,10 @@ export const catalogProducts: CatalogProduct[] = [
     stock: 62,
     icon: "🔌",
     accent: "from-violet-100 to-fuchsia-100",
-    images: ["🔌", "🧵", "⚙️"],
+    images: [
+      "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1615526675159-e248c3021d3f?auto=format&fit=crop&w=1200&q=85",
+    ],
     specs: { Length: "1.8m", Connector: "USB-C to USB-C", Power: "100W", Warranty: "6 months" },
   },
   {
@@ -77,7 +86,10 @@ export const catalogProducts: CatalogProduct[] = [
     stock: 11,
     icon: "🎧",
     accent: "from-teal-100 to-emerald-100",
-    images: ["🎧", "🎶", "🎙️"],
+    images: [
+      "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=1200&q=85",
+    ],
     specs: { Battery: "30 hours", Connectivity: "Bluetooth 5.3", Warranty: "1 year", Weight: "42g" },
   },
 ];

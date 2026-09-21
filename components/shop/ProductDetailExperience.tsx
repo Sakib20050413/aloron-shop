@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, MessageCircle, Minus, Plus, ShieldCheck, ShoppingBag, Truck, Zap, RotateCcw } from "lucide-react";
 import type { CatalogProduct } from "@/lib/catalog";
 import { ProductGallery } from "@/components/shop/ProductGallery";
+import { ImageOrIcon } from "@/components/shop/ImageOrIcon";
 
 type Props = {
   product: CatalogProduct;
@@ -82,7 +83,7 @@ export function ProductDetailExperience({ product, whatsappUrl }: Props) {
         <div className="rounded-3xl border border-[#eae6df] bg-[#fffdf9] p-6 dark:border-white/10 dark:bg-slate-900/70"><h2 className="text-2xl font-black text-stone-950 dark:text-white">প্রায়শই জিজ্ঞাসিত প্রশ্ন</h2><div className="mt-4 divide-y divide-stone-100 dark:divide-white/10">{faqs.map(([question, answer]) => <details key={question} className="group py-4"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-bold text-stone-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500 dark:text-white"><span>{question}</span><ChevronDown aria-hidden="true" size={18} className="shrink-0 transition-transform duration-200 group-open:rotate-180" /></summary><p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600 dark:text-slate-400">{answer}</p></details>)}</div></div>
       </section>
 
-      {showSticky && <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#eae6df] bg-[#fbf9f5]/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(60,50,40,0.12)] backdrop-blur-md md:hidden dark:border-white/10 dark:bg-[#080c14]/95"><div className="mx-auto flex max-w-xl items-center gap-3"><div className="grid size-11 shrink-0 place-items-center rounded-xl bg-cyan-100 text-2xl dark:bg-cyan-500/10">{product.images[0]}</div><div className="min-w-0 flex-1"><p className="truncate text-xs font-bold text-stone-700 dark:text-slate-300">{product.name}</p><p className="font-black text-stone-950 dark:text-white">৳{(product.sellPrice * quantity).toLocaleString("en-BD")}</p></div><Link href={checkoutHref} className="rounded-xl bg-cyan-500 px-4 py-3 text-sm font-black text-slate-950 shadow-[0_0_16px_rgba(6,182,212,0.25)] active:scale-[0.97]">এখনই কিনুন</Link></div></div>}
+      {showSticky && <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#eae6df] bg-[#fbf9f5]/95 p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-8px_30px_rgba(60,50,40,0.12)] backdrop-blur-md md:hidden dark:border-white/10 dark:bg-[#080c14]/95"><div className="mx-auto flex max-w-xl items-center gap-3"><div className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-xl bg-cyan-100 p-1 text-2xl dark:bg-cyan-500/10"><ImageOrIcon src={product.images[0] ?? product.icon} alt="" sizes="44px" className="size-full object-contain" /></div><div className="min-w-0 flex-1"><p className="truncate text-xs font-bold text-stone-700 dark:text-slate-300">{product.name}</p><p className="font-black text-stone-950 dark:text-white">৳{(product.sellPrice * quantity).toLocaleString("en-BD")}</p></div><Link href={checkoutHref} className="rounded-xl bg-cyan-500 px-4 py-3 text-sm font-black text-slate-950 shadow-[0_0_16px_rgba(6,182,212,0.25)] active:scale-[0.97]">এখনই কিনুন</Link></div></div>}
     </>
   );
 }

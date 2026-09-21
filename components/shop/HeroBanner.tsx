@@ -1,44 +1,76 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
 
-export function HeroBanner({ title, subtitle }: { title?: string; subtitle?: string }) {
+const slides = [
+  {
+    id: "pocket-turbo-mini-fan",
+    eyebrow: "গরমের সেরা সঙ্গী · GAD-001",
+    title: "চরম গরমে তাৎক্ষণিক শীতল বাতাস",
+    product: "পকেট টার্বো ফ্যান",
+    price: "৳৬৯৯",
+    discount: "১৩% ছাড়",
+    image: "https://images.unsplash.com/photo-1583225275995-0f09b8f0b7a7?auto=format&fit=crop&w=1200&q=85",
+    accent: "from-cyan-500/20 via-sky-400/10 to-transparent",
+  },
+  {
+    id: "65w-gan-fast-charger",
+    eyebrow: "এক চার্জার · সব ডিভাইস · GAD-002",
+    title: "এক চার্জারেই ল্যাপটপ ও ফোন",
+    product: "আল্ট্রা ফাস্ট চার্জিং",
+    price: "৳১,৭৯০",
+    discount: "১০% ছাড়",
+    image: "https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=1200&q=85",
+    accent: "from-amber-500/20 via-orange-400/10 to-transparent",
+  },
+  {
+    id: "airbeat-wireless-earbuds",
+    eyebrow: "সাউন্ড, যা আপনার · GAD-004",
+    title: "ডিপ ব্যাস ও নয়েজ ক্যান্সেলেশন",
+    product: "সারাদিনের ব্যাটারি ব্যাকআপ",
+    price: "৳১,৪৯০",
+    discount: "১২% ছাড়",
+    image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1200&q=85",
+    accent: "from-violet-500/20 via-fuchsia-400/10 to-transparent",
+  },
+];
+
+export function HeroBanner() {
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const slide = slides[active];
+
+  useEffect(() => {
+    if (paused) return;
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 5000);
+    return () => window.clearInterval(timer);
+  }, [paused]);
+
   return (
-    <section className="relative overflow-hidden bg-slate-50 text-slate-900 transition-colors duration-200 dark:bg-[#030712] dark:text-white">
-      <div className="pointer-events-none absolute -left-32 top-0 size-96 rounded-full bg-cyan-400/10 blur-3xl dark:bg-[#06B6D4]/25" />
-      <div className="pointer-events-none absolute right-0 top-0 size-[28rem] rounded-full bg-cyan-300/10 blur-3xl dark:bg-[#8B5CF6]/25" />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-20 lg:grid-cols-[1.1fr_.9fr] lg:px-8 lg:py-28">
-        <motion.div initial={{ opacity: 1, y: 0 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-700 dark:text-cyan-200">
-            <Sparkles size={14} /> ২০২৬ সালের গ্যাজেট কালেকশন
-          </div>
-          <p className="mb-4 text-sm font-semibold text-cyan-700 dark:text-cyan-200">ফেসবুকে ২.৫K+ ফলোয়ারের বিশ্বস্ত গ্যাজেট শপ</p>
-          <h1 className="max-w-3xl text-balance text-3xl font-black leading-[1.2] tracking-tight text-slate-900 sm:text-5xl sm:leading-[1.08] lg:text-7xl dark:text-white">{title ?? "প্রয়োজনীয় সব"} <span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent dark:from-cyan-300 dark:to-violet-400">{title ? "" : "স্মার্ট গ্যাজেট ও ইলেকট্রনিক্স"}</span></h1>
-          <p className="mt-5 max-w-xl text-base leading-7 text-slate-600 sm:mt-6 sm:text-lg dark:text-slate-300">{subtitle ?? "Thoughtfully chosen tech essentials for the way you live, work, and move."}</p>
-          <div className="mt-7 flex flex-wrap gap-3 sm:mt-9">
-            <Link href="#trending" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-cyan-500 px-5 py-3.5 text-sm font-bold text-white transition hover:bg-cyan-600 focus-visible:ring-2 focus-visible:ring-cyan-200">কালেকশন দেখুন <ArrowUpRight size={17} /></Link>
-            <Link href="#trending" className="inline-flex min-h-11 items-center rounded-xl border border-slate-300 px-5 py-3.5 text-sm font-bold text-slate-700 transition hover:border-cyan-400 hover:text-cyan-700 focus-visible:ring-2 focus-visible:ring-cyan-200 dark:border-white/15 dark:text-slate-200 dark:hover:border-cyan-400/50">ট্রেন্ডিং গ্যাজেট</Link>
-          </div>
-          <div className="mt-8 flex flex-wrap gap-3 text-xs font-bold text-slate-700 dark:text-slate-200">
-            <span className="rounded-full border border-cyan-300/40 bg-cyan-100 px-3 py-2 dark:bg-cyan-300/10">⚡ ২৪–৪৮ ঘণ্টায় ডেলিভারি</span>
-            <span className="rounded-full border border-violet-300/40 bg-violet-100 px-3 py-2 dark:bg-violet-300/10">✦ ১০০% টেস্টেড</span>
-            <span className="rounded-full border border-amber-300/40 bg-amber-100 px-3 py-2 dark:bg-amber-300/10">৳২০০ বিকাশ অগ্রিম বুকিং</span>
-          </div>
-        </motion.div>
-        <motion.div initial={{ opacity: 1, scale: 1, rotate: 0 }} animate={{ opacity: 1, scale: 1, rotate: 0, y: [0, -12, 0] }} transition={{ duration: 5, ease: "easeInOut", repeat: Infinity }} className="relative mx-auto w-full max-w-md">
-          <motion.div animate={{ opacity: [0.35, 0.7, 0.35], scale: [1, 1.12, 1] }} transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }} className="absolute inset-5 rounded-[2rem] bg-cyan-400/40 blur-2xl" />
-          <div className="absolute -right-10 -top-10 size-48 rounded-full bg-violet-500/30 blur-3xl" />
-          <div className="relative aspect-square overflow-hidden rounded-[2rem] border border-slate-200/90 bg-white/90 p-7 shadow-[0_8px_25px_rgba(0,0,0,0.04)] dark:border-white/10 dark:bg-gradient-to-br dark:from-cyan-500 dark:via-indigo-600 dark:to-violet-600 dark:shadow-2xl dark:shadow-cyan-950/40">
-            <div className="flex h-full flex-col justify-between rounded-3xl border border-slate-200/90 bg-white/70 p-6 backdrop-blur-sm dark:border-white/20 dark:bg-black/10">
-              <span className="text-sm font-bold text-cyan-700 dark:text-cyan-100">আলোড়ন / ২০২৬ কালেকশন</span>
-              <div><div className="text-8xl">🎧</div><p className="mt-4 text-2xl font-black text-slate-900 dark:text-white">স্বচ্ছন্দ সাউন্ড।<br />কম শব্দ।</p></div>
-              <div className="flex items-end justify-between text-sm text-cyan-700 dark:text-cyan-100"><span>নির্বাচিত গ্যাজেট</span><ArrowUpRight size={20} /></div>
-            </div>
-          </div>
-        </motion.div>
+    <section aria-label="বিশেষ অফার" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} className={`relative overflow-hidden bg-gradient-to-br ${slide.accent} bg-[#faf9f6] text-stone-950 dark:bg-[#070a10] dark:text-white`}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(6,182,212,0.12),transparent_35%)] dark:bg-[radial-gradient(circle_at_70%_20%,rgba(6,182,212,0.16),transparent_35%)]" />
+      <div className="relative mx-auto grid min-h-[30rem] max-w-7xl items-center gap-10 px-5 py-12 sm:py-16 lg:grid-cols-[1.05fr_.95fr] lg:px-8 lg:py-20">
+        <AnimatePresence mode="wait">
+          <motion.div key={slide.id} initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 24 }} transition={{ duration: 0.35 }} className="relative z-10">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-700 dark:text-cyan-200"><Sparkles size={14} aria-hidden="true" /> ২০২৬ সালের গ্যাজেট কালেকশন</div>
+            <p className="text-sm font-bold tracking-wide text-cyan-700 dark:text-cyan-300">{slide.eyebrow}</p>
+            <h1 className="mt-4 max-w-2xl text-balance text-4xl font-black leading-[1.12] tracking-tight sm:text-6xl">{slide.title}<br /><span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent dark:from-cyan-300 dark:to-violet-400">— {slide.product}</span></h1>
+            <div className="mt-7 flex items-center gap-4"><span className="text-3xl font-black sm:text-4xl">{slide.price}</span><span className="rounded-full bg-amber-400 px-3 py-1.5 text-xs font-black text-slate-950">{slide.discount}</span></div>
+            <Link href={`/product/${slide.id}`} className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3.5 text-sm font-black text-slate-950 shadow-[0_0_24px_rgba(6,182,212,0.2)] transition hover:bg-cyan-300 focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-[0.97]">কালেকশন দেখুন <ArrowRight size={17} aria-hidden="true" /></Link>
+          </motion.div>
+        </AnimatePresence>
+        <AnimatePresence mode="wait">
+          <motion.div key={slide.image} initial={{ opacity: 0, scale: .92, rotate: 3 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} exit={{ opacity: 0, scale: 1.04, rotate: -3 }} transition={{ duration: 0.45 }} className="relative mx-auto aspect-square w-full max-w-[28rem]">
+            <div className="absolute inset-8 rounded-full bg-cyan-400/20 blur-3xl" />
+            <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[2.5rem] border border-[#eae6df] bg-white/80 p-8 shadow-[0_18px_60px_rgba(60,50,40,0.12)] backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.04]"><Image src={slide.image} alt={slide.product} width={900} height={900} priority={active === 0} sizes="(max-width: 1024px) 90vw, 42vw" className="h-full w-full object-contain mix-blend-multiply drop-shadow-2xl dark:mix-blend-normal" /></div>
+          </motion.div>
+        </AnimatePresence>
       </div>
+      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3"><button type="button" onClick={() => setActive((active - 1 + slides.length) % slides.length)} aria-label="আগের স্লাইড" className="grid size-10 place-items-center rounded-full border border-stone-300 bg-white/80 text-stone-800 transition hover:border-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 dark:border-white/15 dark:bg-slate-900/80 dark:text-white"><ArrowLeft size={16} /></button>{slides.map((item, index) => <button type="button" key={item.id} onClick={() => setActive(index)} aria-label={`স্লাইড ${index + 1}`} className={`h-2 rounded-full transition-all ${active === index ? "w-8 bg-cyan-500" : "w-2 bg-stone-300 dark:bg-white/30"}`} />)}<button type="button" onClick={() => setActive((active + 1) % slides.length)} aria-label="পরের স্লাইড" className="grid size-10 place-items-center rounded-full border border-stone-300 bg-white/80 text-stone-800 transition hover:border-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 dark:border-white/15 dark:bg-slate-900/80 dark:text-white"><ArrowRight size={16} /></button></div>
     </section>
   );
 }

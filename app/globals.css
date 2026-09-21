@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #fbf9f5;
+  --background: #faf9f6;
   --foreground: #1c1917;
 }
 
@@ -24,7 +24,7 @@ body {
 }
 
 .dark body {
-  --background: #080c14;
+  --background: #070a10;
   --foreground: #f8fafc;
   background-image: radial-gradient(circle at 1px 1px, rgb(34 211 238 / 0.12) 1px, transparent 0), radial-gradient(circle at 50% 0%, rgb(6 182 212 / 0.12), transparent 35rem);
 }
@@ -100,4 +100,10 @@ input,
 select,
 textarea {
   touch-action: manipulation;
+}
+
+@media (max-width: 767px) {
+  body {
+    padding-bottom: 4.8rem;
+  }
 }
