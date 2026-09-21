@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 export const OWNER_ADMIN_EMAILS = new Set([
   "mdnajmussakib2003@gmail.com",
   "md.najmus.sakib.rahatul.2005@gmail.com",
+  "rakibtoha47@gmail.com",
 ]);
 
 function isOwnerAdminEmail(email: string | null | undefined) {

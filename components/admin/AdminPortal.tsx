@@ -7,15 +7,17 @@ import { AdminOrderTable } from "@/components/admin/AdminOrderTable";
 import { ProductAdminPanel } from "@/components/admin/ProductAdminPanel";
 import { CustomerDirectory } from "@/components/admin/CustomerDirectory";
 import { HeroSlideManager } from "@/components/admin/HeroSlideManager";
+import { AdminTeamManager } from "@/components/admin/AdminTeamManager";
 import type { AdminCustomer } from "@/actions/customers";
 
 type AdminOrder = { id: string; orderNumber: string; customerName: string; customerPhone: string; shippingAddress: string; bKashSender: string | null; transactionId: string | null; trackingNumber: string | null; deliveryZone: string; totalAmount: number; advanceAmount: number; orderStatus: string; createdAt: string };
 type AdminProduct = { id: string; name: string; productCode: string; category: string; buyPrice: number; sellPrice: number; stock: number; isActive: boolean; isFeatured: boolean };
 type AnalyticsOrder = AdminOrder & { cost: number };
-type Tab = "products" | "hero" | "settings" | "orders" | "analytics" | "coupons" | "customers";
+type Tab = "products" | "hero" | "settings" | "orders" | "analytics" | "coupons" | "customers" | "admins";
 type AdminSlide = { id: string; title: string; subtitle: string; badgeText: string; discountTag: string; priceText: string; ctaText: string; ctaLink: string; imageUrl: string; order: number; isActive: boolean; createdAt: string; updatedAt: string };
+type AdminMember = { id: string; name: string; email: string; image: string | null; role: "ADMIN" | "CUSTOMER" };
 
-export function AdminPortal({ products, orders, settings, asOf, customers, slides }: { products: AdminProduct[]; orders: AnalyticsOrder[]; settings: SiteSettingsInput; asOf: number; customers: AdminCustomer[]; slides: AdminSlide[] }) {
+export function AdminPortal({ products, orders, settings, asOf, customers, slides, admins }: { products: AdminProduct[]; orders: AnalyticsOrder[]; settings: SiteSettingsInput; asOf: number; customers: AdminCustomer[]; slides: AdminSlide[]; admins: AdminMember[] }) {
   const [tab, setTab] = useState<Tab>("products");
   const [message, setMessage] = useState("");
   const analytics = useMemo(() => {
@@ -31,7 +33,7 @@ export function AdminPortal({ products, orders, settings, asOf, customers, slide
   const sales = activeOrders.reduce((sum, order) => sum + order.totalAmount, 0);
   const costs = activeOrders.reduce((sum, order) => sum + order.cost, 0);
   const advances = activeOrders.reduce((sum, order) => sum + order.advanceAmount, 0);
-  const tabs: [Tab, string][] = [["products", "প্রোডাক্ট ম্যানেজার"], ["hero", "হিরো স্লাইডার"], ["settings", "স্টোর সেটিংস"], ["orders", "অর্ডার ও কুরিয়ার"], ["coupons", "কুপন ও ডিসকাউন্ট"], ["customers", "কাস্টমার ডিরেক্টরি"], ["analytics", "লাভ-ক্ষতি রিপোর্ট"]];
+  const tabs: [Tab, string][] = [["products", "প্রোডাক্ট ম্যানেজার"], ["hero", "হিরো স্লাইডার"], ["admins", "👥 অ্যাডমিন টিম"], ["settings", "স্টোর সেটিংস"], ["orders", "অর্ডার ও কুরিয়ার"], ["coupons", "কুপন ও ডিসকাউন্ট"], ["customers", "কাস্টমার ডিরেক্টরি"], ["analytics", "লাভ-ক্ষতি রিপোর্ট"]];
 
   const saveSettings = async (formData: FormData) => {
     const input = Object.fromEntries(formData) as unknown as SiteSettingsInput;
@@ -44,6 +46,7 @@ export function AdminPortal({ products, orders, settings, asOf, customers, slide
     {message && <p aria-live="polite" className="mt-4 rounded-xl bg-emerald-50 p-3 text-sm font-bold text-emerald-700">{message}</p>}
     {tab === "products" && <ProductAdminPanel initialProducts={products} />}
     {tab === "hero" && <HeroSlideManager initialSlides={slides} />}
+    {tab === "admins" && <AdminTeamManager initialAdmins={admins} />}
     {tab === "settings" && <section className="mt-6 rounded-3xl border border-slate-200 p-6 dark:border-white/10"><h2 className="text-xl font-black">স্টোর ও হোমপেজ সেটিংস</h2><form action={saveSettings} className="mt-6 grid gap-4 sm:grid-cols-2"><Field name="noticeText" label="টপ নোটিস টেক্সট" value={settings.noticeText} /><Field name="heroTitle" label="হিরো ব্যানার হেডলাইন" value={settings.heroTitle} /><Field name="heroSubtitle" label="হিরো সাব-টাইটেল" value={settings.heroSubtitle} /><Field name="bkashNumber" label="বিকাশ রিসিভ নম্বর" value={settings.bkashNumber} /><Field name="advanceFee" label="বিকাশ অগ্রিম ফি" value={String(settings.advanceFee)} type="number" /><Field name="contactNumber" label="কন্টাক্ট নম্বর" value={settings.contactNumber} /><Field name="whatsappNumber" label="হোয়াটসঅ্যাপ নম্বর" value={settings.whatsappNumber} /><Field name="address" label="শপের ঠিকানা" value={settings.address} /><Field name="insideDhakaFee" label="ঢাকার ভেতরের ডেলিভারি চার্জ" value={String(settings.insideDhakaFee)} type="number" /><Field name="outsideDhakaFee" label="ঢাকার বাইরের ডেলিভারি চার্জ" value={String(settings.outsideDhakaFee)} type="number" /><button className="rounded-xl bg-cyan-500 px-5 py-3 font-black text-slate-950 sm:col-span-2">সেটিংস সংরক্ষণ করুন</button></form></section>}
     {tab === "orders" && <section className="mt-6 rounded-3xl border border-slate-200 p-6 dark:border-white/10"><h2 className="text-xl font-black">লাইভ অর্ডার ও কুরিয়ার কন্ট্রোল</h2><p className="mt-1 text-sm text-slate-500">TrxID, ঠিকানা ও dispatch action একসাথে দেখুন।</p><AdminOrderTable initialOrders={orders} /></section>}
     {tab === "customers" && <CustomerDirectory customers={customers} />}

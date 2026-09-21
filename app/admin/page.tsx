@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { AdminPortal } from "@/components/admin/AdminPortal";
 import { getAdminCustomers } from "@/actions/customers";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
+import { OWNER_ADMIN_EMAILS } from "@/auth";
 
 const defaultSettings = {
   noticeText: "কুমিল্লাসহ সারাদেশে দ্রুততম হোম ডেলিভারি",
@@ -24,11 +25,12 @@ export default async function AdminPage() {
   const session = await auth();
   if (!session?.user) redirect("/login?callbackUrl=/admin");
   if (session.user.role !== "ADMIN") notFound();
-  const [orders, products, settings, slides, registeredCustomerCount, customerPhoneRows, registeredUsers, customerResult] = await Promise.all([
+  const [orders, products, settings, slides, adminUsers, registeredCustomerCount, customerPhoneRows, registeredUsers, customerResult] = await Promise.all([
     prisma.order.findMany({ include: { items: true }, orderBy: { createdAt: "desc" } }).catch((error) => { console.error("Admin order read failed:", error); return []; }),
     prisma.product.findMany({ orderBy: { createdAt: "desc" } }).catch((error) => { console.error("Admin product read failed:", error); return []; }),
     prisma.siteSettings.findUnique({ where: { id: "global" } }).catch((error) => { console.error("Site settings read failed:", error); return null; }),
     prisma.heroSlide.findMany({ orderBy: { order: "asc" } }).catch((error) => { console.error("Hero slide read failed:", error); return []; }),
+    prisma.user.findMany({ where: { role: "ADMIN" }, select: { id: true, name: true, email: true, image: true, role: true }, orderBy: { createdAt: "asc" } }),
     prisma.user.count({ where: { role: "CUSTOMER" } }),
     prisma.order.findMany({ distinct: ["customerPhone"], select: { customerPhone: true } }),
     prisma.user.findMany({ where: { role: "CUSTOMER" }, select: { phone: true } }),
@@ -51,5 +53,6 @@ export default async function AdminPage() {
   const asOf = orders[0]?.createdAt.getTime() ?? 0;
   const savedSettings = settings ? { ...defaultSettings, ...settings, advanceFee: Number(settings.advanceFee), insideDhakaFee: Number(settings.insideDhakaFee), outsideDhakaFee: Number(settings.outsideDhakaFee) } : defaultSettings;
   const customers = customerResult.success ? customerResult.customers : [];
-  return <><Navbar /><main className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-[.2em] text-cyan-600">Restricted portal</p><h1 className="mt-2 text-4xl font-black text-slate-950 dark:text-white">Store Management System</h1></div><div className="flex items-center gap-3"><span className="rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-bold text-emerald-700">Admin access</span><AdminLogoutButton /></div></div><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">{metrics.map(([label, value, Icon]) => <div key={label} className="rounded-2xl border border-slate-200 p-5 dark:border-white/10"><Icon className="text-cyan-600" size={22} /><p className="mt-5 text-sm text-slate-500">{label}</p><p className="mt-1 text-2xl font-black">{value}</p></div>)}</div><AdminPortal products={adminProducts} orders={adminOrders} settings={savedSettings} asOf={asOf} customers={customers} slides={slides.map((slide) => ({ ...slide, createdAt: slide.createdAt.toISOString(), updatedAt: slide.updatedAt.toISOString() }))} /></main></>;
+  const normalizedAdmins = adminUsers.filter((user) => user.role === "ADMIN" || OWNER_ADMIN_EMAILS.has(user.email.toLowerCase()));
+  return <><Navbar /><main className="mx-auto max-w-7xl px-5 py-12 lg:px-8"><div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-sm font-bold uppercase tracking-[.2em] text-cyan-600">Restricted portal</p><h1 className="mt-2 text-4xl font-black text-slate-950 dark:text-white">Store Management System</h1></div><div className="flex items-center gap-3"><span className="rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-bold text-emerald-700">Admin access</span><AdminLogoutButton /></div></div><div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">{metrics.map(([label, value, Icon]) => <div key={label} className="rounded-2xl border border-slate-200 p-5 dark:border-white/10"><Icon className="text-cyan-600" size={22} /><p className="mt-5 text-sm text-slate-500">{label}</p><p className="mt-1 text-2xl font-black">{value}</p></div>)}</div><AdminPortal products={adminProducts} orders={adminOrders} settings={savedSettings} asOf={asOf} customers={customers} slides={slides.map((slide) => ({ ...slide, createdAt: slide.createdAt.toISOString(), updatedAt: slide.updatedAt.toISOString() }))} admins={normalizedAdmins} /></main></>;
 }
