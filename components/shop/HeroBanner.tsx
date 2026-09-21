@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const slides = [
   {
@@ -24,7 +24,7 @@ const slides = [
     product: "আল্ট্রা ফাস্ট চার্জিং",
     price: "৳১,৭৯০",
     discount: "১০% ছাড়",
-    image: "https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=1200&q=85",
+    image: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85",
     accent: "from-amber-500/20 via-orange-400/10 to-transparent",
   },
   {
@@ -42,16 +42,34 @@ const slides = [
 export function HeroBanner() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const touchStart = useRef<number | null>(null);
   const slide = slides[active];
 
   useEffect(() => {
     if (paused) return;
     const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 5000);
     return () => window.clearInterval(timer);
-  }, [paused]);
+  }, [active, paused]);
+
+  const handleSlideChange = (index: number) => {
+    setActive((index + slides.length) % slides.length);
+  };
+  const handleTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+    touchStart.current = event.changedTouches[0]?.clientX ?? null;
+    setPaused(true);
+  };
+  const handleTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+    const start = touchStart.current;
+    const end = event.changedTouches[0]?.clientX;
+    touchStart.current = null;
+    if (start !== null && end !== undefined && Math.abs(end - start) > 48) {
+      handleSlideChange(active + (end < start ? 1 : -1));
+    }
+    setPaused(false);
+  };
 
   return (
-    <section aria-label="বিশেষ অফার" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} className={`relative overflow-hidden bg-gradient-to-br ${slide.accent} bg-[#faf9f6] text-stone-950 dark:bg-[#070a10] dark:text-white`}>
+    <section aria-label="বিশেষ অফার" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchCancel={() => { touchStart.current = null; setPaused(false); }} className={`relative overflow-hidden bg-gradient-to-br ${slide.accent} bg-[#faf9f6] text-stone-950 dark:bg-[#080d1a] dark:text-white`}>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(6,182,212,0.12),transparent_35%)] dark:bg-[radial-gradient(circle_at_70%_20%,rgba(6,182,212,0.16),transparent_35%)]" />
       <div className="relative mx-auto grid min-h-[30rem] max-w-7xl items-center gap-10 px-5 py-12 sm:py-16 lg:grid-cols-[1.05fr_.95fr] lg:px-8 lg:py-20">
         <AnimatePresence mode="wait">
@@ -66,11 +84,11 @@ export function HeroBanner() {
         <AnimatePresence mode="wait">
           <motion.div key={slide.image} initial={{ opacity: 0, scale: .92, rotate: 3 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} exit={{ opacity: 0, scale: 1.04, rotate: -3 }} transition={{ duration: 0.45 }} className="relative mx-auto aspect-square w-full max-w-[28rem]">
             <div className="absolute inset-8 rounded-full bg-cyan-400/20 blur-3xl" />
-            <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[2.5rem] border border-[#eae6df] bg-white/80 p-8 shadow-[0_18px_60px_rgba(60,50,40,0.12)] backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.04]"><Image src={slide.image} alt={slide.product} width={900} height={900} priority={active === 0} sizes="(max-width: 1024px) 90vw, 42vw" className="h-full w-full object-contain mix-blend-multiply drop-shadow-2xl dark:mix-blend-normal" /></div>
+            <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[2.5rem] border border-[#eae6df] bg-white/80 p-8 shadow-[0_18px_60px_rgba(60,50,40,0.12)] backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.04]"><Image src={slide.image} alt={slide.product} width={900} height={900} priority={active === 0} sizes="(max-width: 1024px) 90vw, 42vw" onError={(event) => { event.currentTarget.src = "/logo.png"; }} className="h-full w-full object-contain mix-blend-multiply drop-shadow-2xl dark:mix-blend-normal" /></div>
           </motion.div>
         </AnimatePresence>
       </div>
-      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3"><button type="button" onClick={() => setActive((active - 1 + slides.length) % slides.length)} aria-label="আগের স্লাইড" className="grid size-10 place-items-center rounded-full border border-stone-300 bg-white/80 text-stone-800 transition hover:border-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 dark:border-white/15 dark:bg-slate-900/80 dark:text-white"><ArrowLeft size={16} /></button>{slides.map((item, index) => <button type="button" key={item.id} onClick={() => setActive(index)} aria-label={`স্লাইড ${index + 1}`} className={`h-2 rounded-full transition-all ${active === index ? "w-8 bg-cyan-500" : "w-2 bg-stone-300 dark:bg-white/30"}`} />)}<button type="button" onClick={() => setActive((active + 1) % slides.length)} aria-label="পরের স্লাইড" className="grid size-10 place-items-center rounded-full border border-stone-300 bg-white/80 text-stone-800 transition hover:border-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 dark:border-white/15 dark:bg-slate-900/80 dark:text-white"><ArrowRight size={16} /></button></div>
+      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3"><button type="button" onClick={() => handleSlideChange(active - 1)} aria-label="আগের স্লাইড" className="grid size-10 place-items-center rounded-full border border-stone-300 bg-white/80 text-stone-800 transition hover:border-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 dark:border-white/15 dark:bg-slate-900/80 dark:text-white"><ArrowLeft size={16} /></button>{slides.map((item, index) => <button type="button" key={item.id} onClick={() => handleSlideChange(index)} aria-label={`স্লাইড ${index + 1}`} className={`grid size-8 place-items-center rounded-full transition focus-visible:ring-2 focus-visible:ring-cyan-500`}><span className={`block h-2 rounded-full transition-all ${active === index ? "w-8 bg-cyan-500" : "w-2 bg-stone-300 dark:bg-white/30"}`} /></button>)}<button type="button" onClick={() => handleSlideChange(active + 1)} aria-label="পরের স্লাইড" className="grid size-10 place-items-center rounded-full border border-stone-300 bg-white/80 text-stone-800 transition hover:border-cyan-500 focus-visible:ring-2 focus-visible:ring-cyan-500 dark:border-white/15 dark:bg-slate-900/80 dark:text-white"><ArrowRight size={16} /></button></div>
     </section>
   );
 }

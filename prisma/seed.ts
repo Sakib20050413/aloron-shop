@@ -27,7 +27,7 @@ const products = [
     sellPrice: 1790,
     originalPrice: 1990,
     stock: 18,
-    images: ["https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=1200&q=85"],
+    images: ["https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85"],
     specs: { ports: "2x USB-C, 1x USB-A", power: "65W", warranty: "1 year", weight: "105g" },
   },
   {

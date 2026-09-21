@@ -49,7 +49,7 @@ export const catalogProducts: CatalogProduct[] = [
     icon: "⚡",
     accent: "from-amber-100 to-orange-100",
     images: [
-      "https://images.unsplash.com/photo-1625842268584-8f3296236761?auto=format&fit=crop&w=1200&q=85",
+      "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85",
       "https://images.unsplash.com/photo-1609592424984-6d7f7f5f1d6c?auto=format&fit=crop&w=1200&q=85",
     ],
     specs: { Ports: "2x USB-C, 1x USB-A", Power: "65W", Warranty: "1 year", Weight: "105g" },
