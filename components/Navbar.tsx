@@ -43,7 +43,7 @@ export function Navbar() {
   const [logoFailed, setLogoFailed] = useState(false);
   const [products, setProducts] = useState<CatalogProduct[]>(catalogProducts);
   const [siteSettings, setSiteSettings] = useState(defaultSettings);
-  const [cartLines, setCartLines] = useState<CartLine[]>([{ product: catalogProducts[0], quantity: 1 }]);
+  const [cartLines, setCartLines] = useState<CartLine[]>([]);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
