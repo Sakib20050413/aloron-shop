@@ -9,13 +9,14 @@ export function ThemeToggle({ mobile = false }: { mobile?: boolean }) {
     <button
       type="button"
       onClick={toggleTheme}
-      aria-label={theme === "dark" ? "লাইট থিম চালু করুন" : "ডার্ক থিম চালু করুন"}
+      aria-label="থিম পরিবর্তন করুন (Light / Dark Mode)"
+      title="থিম পরিবর্তন করুন (Light / Dark Mode)"
       className={mobile
-        ? "flex min-h-11 w-full items-center gap-3 rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-cyan-400"
-        : "grid size-11 place-items-center rounded-xl text-slate-600 transition hover:bg-slate-100 hover:text-cyan-600 focus-visible:ring-2 focus-visible:ring-cyan-400 dark:text-slate-300 dark:hover:bg-white/10"}
+        ? "flex min-h-11 w-full items-center justify-between rounded-xl bg-white/10 p-1 text-sm font-bold text-white transition-colors duration-200 hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-cyan-400"
+        : "inline-flex min-h-10 items-center gap-1 rounded-full border border-stone-200/80 bg-stone-100/80 p-1 text-xs font-bold text-stone-600 transition-colors duration-200 hover:border-cyan-400/60 focus-visible:ring-2 focus-visible:ring-cyan-400 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300"}
     >
-      {theme === "dark" ? <Sun size={19} /> : <Moon size={19} />}
-      {mobile && (theme === "dark" ? "লাইট থিম" : "ডার্ক থিম")}
+      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 transition-colors duration-200 ${theme === "light" ? "bg-white text-stone-900 shadow-sm" : "text-stone-500 dark:text-slate-400"}`}><Sun size={14} aria-hidden="true" /> দিন</span>
+      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 transition-colors duration-200 ${theme === "dark" ? "bg-slate-950 text-white shadow-sm" : "text-stone-500"}`}><Moon size={14} aria-hidden="true" /> রাত</span>
     </button>
   );
 }

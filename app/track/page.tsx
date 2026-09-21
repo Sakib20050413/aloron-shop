@@ -5,7 +5,7 @@ import { Check, Clock3, PackageCheck, Search, Truck } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 
 type TrackedOrder = { orderNumber: string; orderStatus: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED"; totalAmount: number; dueAmount: number; trackingNumber: string | null; createdAt: string };
-const steps = [["PENDING", "অর্ডার গ্রহণ", Check], ["CONFIRMED", "কনফার্মড", Clock3], ["SHIPPED", "শিপড", Truck], ["DELIVERED", "ডেলিভারড", PackageCheck]] as const;
+const steps = [["PENDING", "অর্ডার গৃহীত হয়েছে", Check], ["CONFIRMED", "প্যাকেজিং চলছে", Clock3], ["SHIPPED", "কুরিয়ারে হস্তান্তর", Truck], ["DELIVERED", "ডেলিভারি সম্পন্ন", PackageCheck]] as const;
 
 export default function TrackPage() {
   const [phone, setPhone] = useState("");
