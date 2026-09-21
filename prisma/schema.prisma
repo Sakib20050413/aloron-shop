@@ -80,6 +80,22 @@ model SiteSettings {
   updatedAt       DateTime @updatedAt
 }
 
+model HeroSlide {
+  id          String   @id @default(cuid())
+  title       String
+  subtitle    String
+  badgeText   String
+  discountTag String
+  priceText   String
+  ctaText     String   @default("কালেকশন দেখুন")
+  ctaLink     String   @default("/products")
+  imageUrl    String
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Coupon {
   id             String   @id @default(uuid())
   code           String   @unique

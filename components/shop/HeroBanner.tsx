@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-const slides = [
+const defaultSlides = [
   {
     id: "pocket-turbo-mini-fan",
     eyebrow: "গরমের সেরা সঙ্গী · GAD-001",
@@ -38,8 +38,12 @@ const slides = [
     accent: "from-violet-500/20 via-fuchsia-400/10 to-transparent",
   },
 ];
+type HeroSlide = { id: string; title: string; subtitle: string; badgeText: string; discountTag: string; priceText: string; ctaText: string; ctaLink: string; imageUrl: string };
+type SlideView = { id: string; eyebrow: string; title: string; product: string; price: string; discount: string; image: string; accent: string; ctaText: string; ctaLink: string };
 
-export function HeroBanner() {
+export function HeroBanner({ cmsSlides = [] }: { cmsSlides?: HeroSlide[] }) {
+  const slides: SlideView[] = cmsSlides.length ? cmsSlides.map((item) => ({ id: item.id, eyebrow: item.subtitle, title: item.title, product: item.badgeText, price: item.priceText, discount: item.discountTag, image: item.imageUrl, accent: "from-cyan-500/20 via-sky-400/10 to-transparent", ctaText: item.ctaText, ctaLink: item.ctaLink })) : defaultSlides.map((item) => ({ ...item, ctaText: "কালেকশন দেখুন", ctaLink: `/product/${item.id}` }));
+  const slideCount = slides.length;
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
   const touchStart = useRef<number | null>(null);
@@ -47,9 +51,9 @@ export function HeroBanner() {
 
   useEffect(() => {
     if (paused) return;
-    const timer = window.setInterval(() => setActive((current) => (current + 1) % slides.length), 5000);
+    const timer = window.setInterval(() => setActive((current) => (current + 1) % slideCount), 5000);
     return () => window.clearInterval(timer);
-  }, [active, paused]);
+  }, [active, paused, slideCount]);
 
   const handleSlideChange = (index: number) => {
     setActive((index + slides.length) % slides.length);
@@ -79,7 +83,7 @@ export function HeroBanner() {
             <p className="text-sm font-bold tracking-wide text-cyan-700 dark:text-cyan-300">{slide.eyebrow}</p>
             <h1 className="mt-4 max-w-2xl text-balance text-4xl font-black leading-[1.12] tracking-tight sm:text-6xl">{slide.title}<br /><span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent dark:from-cyan-300 dark:to-violet-400">— {slide.product}</span></h1>
             <div className="mt-7 flex items-center gap-4"><span className="text-3xl font-black sm:text-4xl">{slide.price}</span><span className="rounded-full bg-amber-400 px-3 py-1.5 text-xs font-black text-slate-950">{slide.discount}</span></div>
-            <Link href={`/product/${slide.id}`} className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3.5 text-sm font-black text-slate-950 shadow-[0_0_24px_rgba(6,182,212,0.2)] transition hover:bg-cyan-300 focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-[0.97]">কালেকশন দেখুন <ArrowRight size={17} aria-hidden="true" /></Link>
+            <Link href={slide.ctaLink} className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3.5 text-sm font-black text-slate-950 shadow-[0_0_24px_rgba(6,182,212,0.2)] transition hover:bg-cyan-300 focus-visible:ring-2 focus-visible:ring-cyan-500 active:scale-[0.97]">{slide.ctaText} <ArrowRight size={17} aria-hidden="true" /></Link>
           </motion.div>
         </AnimatePresence>
         <AnimatePresence mode="wait">

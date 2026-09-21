@@ -58,6 +58,12 @@ const products = [
   },
 ];
 
+const heroSlides = [
+  { title: "চরম গরমে তাৎক্ষণিক শীতল বাতাস", subtitle: "গরমের সেরা সঙ্গী - GAD-001", badgeText: "পকেট টার্বো ফ্যান", discountTag: "১৩% ছাড়", priceText: "৳৬৯৯", ctaText: "কালেকশন দেখুন", ctaLink: "/product/pocket-turbo-mini-fan", imageUrl: products[0].images[0], order: 0 },
+  { title: "এক চার্জারেই ল্যাপটপ ও ফোন", subtitle: "এক চার্জার · সব ডিভাইস · GAD-002", badgeText: "৬৫W GaN ফাস্ট চার্জার", discountTag: "১০% ছাড়", priceText: "৳১,৭৯০", ctaText: "এখনই কিনুন", ctaLink: "/product/65w-gan-fast-charger", imageUrl: products[1].images[0], order: 1 },
+  { title: "ডিপ ব্যাস ও নয়েজ ক্যান্সেলেশন", subtitle: "সাউন্ড, যা আপনার · GAD-004", badgeText: "AirBeat Wireless Earbuds", discountTag: "১২% ছাড়", priceText: "৳১,৪৯০", ctaText: "কালেকশন দেখুন", ctaLink: "/product/airbeat-wireless-earbuds", imageUrl: products[3].images[0], order: 2 },
+];
+
 async function main() {
   const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
   const adminPassword = process.env.ADMIN_PASSWORD;
@@ -85,7 +91,16 @@ async function main() {
     });
   }
 
-  console.log(`Seeded admin ${adminEmail} and ${products.length} products.`);
+  if ((await prisma.heroSlide.count()) === 0) {
+    await prisma.heroSlide.createMany({ data: heroSlides.map((slide) => ({ ...slide, isActive: true })) });
+  }
+  await prisma.siteSettings.upsert({
+    where: { id: "global" },
+    update: {},
+    create: { id: "global" },
+  });
+
+  console.log(`Seeded admin ${adminEmail}, ${products.length} products, and ${heroSlides.length} hero slides.`);
 }
 
 main()
