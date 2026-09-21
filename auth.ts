@@ -16,6 +16,10 @@ function isOwnerAdminEmail(email: string | null | undefined) {
   return Boolean(email && OWNER_ADMIN_EMAILS.has(email.trim().toLowerCase()));
 }
 
+export function getAuthorizedRole(email: string | null | undefined, currentRole: "CUSTOMER" | "ADMIN" = "CUSTOMER") {
+  return isOwnerAdminEmail(email) ? "ADMIN" : currentRole;
+}
+
 async function enforceOwnerAdmin(email: string | null | undefined) {
   if (!email || !isOwnerAdminEmail(email)) return false;
   await prisma.user.updateMany({
@@ -57,7 +61,7 @@ const providers: Provider[] = [
       const passwordMatches = await bcrypt.compare(parsed.data.password, user.passwordHash);
       if (!passwordMatches) return null;
 
-      const role = isOwnerAdminEmail(email) ? "ADMIN" : user.role;
+      const role = getAuthorizedRole(email, user.role);
       if (role !== user.role) {
         await prisma.user.update({ where: { id: user.id }, data: { role } });
       }
@@ -83,7 +87,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async signIn({ user, account }) {
       if (account?.provider === "google" && user.email) {
         const email = user.email.toLowerCase();
-        const role = isOwnerAdminEmail(email) ? "ADMIN" : undefined;
+        const role = getAuthorizedRole(email) === "ADMIN" ? "ADMIN" : undefined;
         const savedUser = await prisma.user.upsert({
           where: { email },
           update: { name: user.name ?? "Aloron customer", image: user.image, ...(role ? { role } : {}) },
