@@ -70,7 +70,7 @@ export function HeroBanner() {
 
   return (
     <section aria-label="বিশেষ অফার" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onTouchCancel={() => { touchStart.current = null; setPaused(false); }} className={`relative overflow-hidden bg-gradient-to-br ${slide.accent} bg-[#faf9f6] text-stone-950 dark:bg-[#080d1a] dark:text-white`}>
-      <div className="pointer-events-none absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">{slides.map((item) => <Image key={item.id} src={item.image} alt="" width={900} height={900} priority loading="eager" sizes="1px" />)}</div>
+      <div className="pointer-events-none absolute h-px w-px overflow-hidden opacity-0" aria-hidden="true">{slides.map((item) => <Image key={item.id} src={item.image} alt="" width={900} height={900} priority loading="eager" unoptimized sizes="1px" />)}</div>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(6,182,212,0.12),transparent_35%)] dark:bg-[radial-gradient(circle_at_70%_20%,rgba(6,182,212,0.16),transparent_35%)]" />
       <div className="relative mx-auto grid min-h-[30rem] max-w-7xl items-center gap-10 px-5 py-12 sm:py-16 lg:grid-cols-[1.05fr_.95fr] lg:px-8 lg:py-20">
         <AnimatePresence mode="wait">
@@ -85,7 +85,7 @@ export function HeroBanner() {
         <AnimatePresence mode="wait">
           <motion.div key={slide.image} initial={{ opacity: 0, scale: .96, x: 18 }} animate={{ opacity: 1, scale: 1, x: 0 }} exit={{ opacity: 0, scale: 1.02, x: -18 }} transition={{ duration: 0.7, ease: "easeInOut" }} className="relative mx-auto aspect-square w-full max-w-[28rem] transition-all duration-700 ease-in-out">
             <div className="absolute inset-8 rounded-full bg-cyan-400/20 blur-3xl" />
-            <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[2.5rem] border border-[#eae6df] bg-white/80 p-8 shadow-[0_18px_60px_rgba(60,50,40,0.12)] backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.04]"><Image src={slide.image} alt={slide.product} width={900} height={900} priority loading="eager" sizes="(max-width: 1024px) 90vw, 42vw" onError={(event) => { event.currentTarget.src = "/logo.png"; }} className="h-full w-full object-contain mix-blend-multiply drop-shadow-2xl transition-all duration-700 ease-in-out dark:mix-blend-normal" /></div>
+            <div className="relative flex h-full items-center justify-center overflow-hidden rounded-[2.5rem] border border-[#eae6df] bg-white/80 p-8 shadow-[0_18px_60px_rgba(60,50,40,0.12)] backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.04]"><Image src={slide.image} alt={slide.product} width={900} height={900} priority loading="eager" unoptimized sizes="(max-width: 1024px) 90vw, 42vw" onError={(event) => { event.currentTarget.src = "/logo.png"; }} className="h-full w-full object-contain mix-blend-multiply drop-shadow-2xl transition-all duration-700 ease-in-out dark:mix-blend-normal" /></div>
           </motion.div>
         </AnimatePresence>
       </div>

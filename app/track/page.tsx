@@ -15,7 +15,7 @@ export default function TrackPage() {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const value = new URLSearchParams(window.location.search).get("orderId");
-    if (value) setOrderId(value.toUpperCase());
+    if (value) window.requestAnimationFrame(() => setOrderId(value.toUpperCase()));
   }, []);
   const track = async (event: FormEvent) => {
     event.preventDefault();

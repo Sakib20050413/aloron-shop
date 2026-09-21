@@ -12,12 +12,23 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
     const handleClick = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
       const link = target.closest("a[href]");
-      if (!link || link.getAttribute("target") || link.getAttribute("href")?.startsWith("#")) return;
+      if (!link || link.getAttribute("target")) return;
+      const href = link.getAttribute("href");
+      if (!href) return;
+      const url = new URL(href, window.location.href);
+      if (url.origin !== window.location.origin) return;
+      if (url.pathname === pathname) {
+        setLoading(false);
+        if (url.hash) {
+          window.requestAnimationFrame(() => document.getElementById(url.hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" }));
+        }
+        return;
+      }
       setLoading(true);
     };
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => setLoading(false));
