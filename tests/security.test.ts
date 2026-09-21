@@ -4,6 +4,7 @@ import { NextRequest } from "next/server";
 import { POST } from "@/app/api/auth/[...nextauth]/route";
 import { getAuthorizedRole } from "@/auth";
 import { resetRateLimits } from "@/lib/rate-limit";
+import { getAdminRouteDecision } from "@/proxy";
 
 beforeEach(() => resetRateLimits());
 
@@ -32,4 +33,10 @@ test("owner emails always resolve to ADMIN", () => {
 
 test("non-admin roles remain customers", () => {
   assert.equal(getAuthorizedRole("customer@example.com", "CUSTOMER"), "CUSTOMER");
+});
+
+test("admin route redirects anonymous users and forbids customers", () => {
+  assert.equal(getAdminRouteDecision(null), "redirect");
+  assert.equal(getAdminRouteDecision("CUSTOMER"), "forbidden");
+  assert.equal(getAdminRouteDecision("ADMIN"), "allow");
 });

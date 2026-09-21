@@ -1,19 +1,24 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
+export function getAdminRouteDecision(role: "ADMIN" | "CUSTOMER" | null) {
+  if (!role) return "redirect";
+  return role === "ADMIN" ? "allow" : "forbidden";
+}
+
 export default auth((request) => {
   const pathname = request.nextUrl.pathname;
   const isAdminRoute = pathname.startsWith("/admin");
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const session = request.auth;
 
-  if (isAdminRoute && !session) {
+  if (isAdminRoute && getAdminRouteDecision(session?.user?.role ?? null) === "redirect") {
     const signInUrl = new URL("/login", request.nextUrl.origin);
     signInUrl.searchParams.set("callbackUrl", "/admin");
     return NextResponse.redirect(signInUrl);
   }
 
-  if (isAdminRoute && session?.user?.role !== "ADMIN") {
+  if (isAdminRoute && getAdminRouteDecision(session?.user?.role ?? null) === "forbidden") {
     return new NextResponse("Not Found", { status: 404 });
   }
 
