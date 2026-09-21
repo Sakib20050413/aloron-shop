@@ -11,6 +11,7 @@ export const OWNER_ADMIN_EMAILS = new Set([
   "md.najmus.sakib.rahatul.2005@gmail.com",
   "rakibtoha47@gmail.com",
 ]);
+const ADMIN_EMAILS = [...OWNER_ADMIN_EMAILS];
 
 function isOwnerAdminEmail(email: string | null | undefined) {
   return Boolean(email && OWNER_ADMIN_EMAILS.has(email.trim().toLowerCase()));
@@ -55,7 +56,13 @@ const providers: Provider[] = [
       if (!parsed.success) return null;
 
       const email = parsed.data.email.toLowerCase();
-      const user = await prisma.user.findUnique({ where: { email } });
+      let user;
+      try {
+        user = await prisma.user.findUnique({ where: { email } });
+      } catch (error) {
+        console.error("Auth DB fallback error:", error);
+        return null;
+      }
       if (!user?.passwordHash) return null;
 
       const passwordMatches = await bcrypt.compare(parsed.data.password, user.passwordHash);
@@ -63,7 +70,11 @@ const providers: Provider[] = [
 
       const role = getAuthorizedRole(email, user.role);
       if (role !== user.role) {
-        await prisma.user.update({ where: { id: user.id }, data: { role } });
+        try {
+          await prisma.user.update({ where: { id: user.id }, data: { role } });
+        } catch (error) {
+          console.error("Auth DB fallback error:", error);
+        }
       }
 
       return {
@@ -88,18 +99,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (account?.provider === "google" && user.email) {
         const email = user.email.toLowerCase();
         const role = getAuthorizedRole(email) === "ADMIN" ? "ADMIN" : undefined;
-        const savedUser = await prisma.user.upsert({
-          where: { email },
-          update: { name: user.name ?? "Aloron customer", image: user.image, ...(role ? { role } : {}) },
-          create: {
-            email,
-            name: user.name ?? "Aloron customer",
-            image: user.image,
-            ...(role ? { role } : {}),
-          },
-        });
-        user.id = savedUser.id;
-        user.role = savedUser.role;
+        try {
+          const savedUser = await prisma.user.upsert({
+            where: { email },
+            update: { name: user.name ?? "Aloron customer", image: user.image, ...(role ? { role } : {}) },
+            create: {
+              email,
+              name: user.name ?? "Aloron customer",
+              image: user.image,
+              ...(role ? { role } : {}),
+            },
+          });
+          user.id = savedUser.id;
+          user.role = savedUser.role;
+        } catch (error) {
+          console.error("Auth DB fallback error:", error);
+          user.role = role ?? "CUSTOMER";
+        }
       }
       return true;
     },
@@ -110,9 +126,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.email = user.email;
       }
       const ownerEmail = token.email ?? user?.email;
-      if (isOwnerAdminEmail(ownerEmail)) {
-        await enforceOwnerAdmin(ownerEmail);
+      if (ownerEmail && ADMIN_EMAILS.includes(ownerEmail.toLowerCase())) {
         token.role = "ADMIN";
+        try {
+          await enforceOwnerAdmin(ownerEmail);
+        } catch (error) {
+          console.error("Auth DB fallback error:", error);
+        }
       }
       return token;
     },
@@ -120,9 +140,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         const ownerEmail = token.email ?? session.user.email;
-        if (isOwnerAdminEmail(ownerEmail)) {
-          await enforceOwnerAdmin(ownerEmail);
+        if (ownerEmail && ADMIN_EMAILS.includes(ownerEmail.toLowerCase())) {
           session.user.role = "ADMIN";
+          try {
+            await enforceOwnerAdmin(ownerEmail);
+          } catch (error) {
+            console.error("Auth DB fallback error:", error);
+          }
         } else {
           session.user.role = token.role as "CUSTOMER" | "ADMIN";
         }
