@@ -26,13 +26,29 @@ async function requireAdmin(): Promise<ActionResult | true> {
   return true;
 }
 
+function generateSlug(name: string, productCode: string): string {
+  const asciiPart = name
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  const codePart = productCode.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "");
+  if (asciiPart.length >= 2) return `${asciiPart}-${codePart}`;
+  return `product-${codePart}`;
+}
+
 export async function createProduct(formData: FormData): Promise<ActionResult> {
   const access = await requireAdmin();
   if (access !== true) return access;
   const parsed = productSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { success: false, error: "সব তথ্য সঠিকভাবে পূরণ করুন।" };
   const data = parsed.data;
-  const slug = `${data.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${data.productCode.toLowerCase()}`;
+  const existingByCode = await prisma.product.findUnique({ where: { productCode: data.productCode }, select: { id: true } });
+  if (existingByCode) return { success: false, error: `"${data.productCode}" কোডটি ইতিমধ্যে ব্যবহৃত হয়েছে। অন্য কোড দিন।` };
+  const slug = generateSlug(data.name, data.productCode);
+  const existingBySlug = await prisma.product.findUnique({ where: { slug }, select: { id: true } });
+  if (existingBySlug) return { success: false, error: "একই নাম ও কোডের পণ্য ইতিমধ্যে আছে।" };
   try {
     await prisma.product.create({
       data: {
@@ -55,7 +71,7 @@ export async function createProduct(formData: FormData): Promise<ActionResult> {
     return { success: true };
   } catch (error) {
     console.error("Product creation failed:", error);
-    return { success: false, error: "প্রোডাক্ট কোড বা নামটি আগে থেকেই আছে।" };
+    return { success: false, error: "পণ্য তৈরি করা যায়নি। আবার চেষ্টা করুন।" };
   }
 }
 
@@ -73,7 +89,7 @@ export async function updateProduct(productId: string, changes: { stock?: number
     return { success: true };
   } catch (error) {
     console.error("Product update failed:", error);
-    return { success: false, error: "প্রোডাক্ট আপডেট করা যায়নি।" };
+    return { success: false, error: "পণ্য আপডেট করা যায়নি।" };
   }
 }
 
@@ -81,10 +97,10 @@ export async function deleteProduct(productId: string): Promise<ActionResult> {
   const access = await requireAdmin();
   if (access !== true) return access;
   const parsedId = z.string().uuid().safeParse(productId);
-  if (!parsedId.success) return { success: false, error: "অবৈধ প্রোডাক্ট।" };
+  if (!parsedId.success) return { success: false, error: "অবৈধ পণ্য।" };
   try {
     const orderItems = await prisma.orderItem.count({ where: { productId } });
-    if (orderItems > 0) return { success: false, error: "অর্ডার ইতিহাস থাকা প্রোডাক্ট ডিলিট করা যাবে না; নিষ্ক্রিয় করুন।" };
+    if (orderItems > 0) return { success: false, error: "অর্ডার ইতিহাস থাকা পণ্য ডিলিট করা যাবে না; নিষ্ক্রিয় করুন।" };
     await prisma.$transaction([
       prisma.review.deleteMany({ where: { productId } }),
       prisma.wishlist.deleteMany({ where: { productId } }),
@@ -96,6 +112,6 @@ export async function deleteProduct(productId: string): Promise<ActionResult> {
     return { success: true };
   } catch (error) {
     console.error("Product deletion failed:", error);
-    return { success: false, error: "প্রোডাক্ট ডিলিট করা যায়নি।" };
+    return { success: false, error: "পণ্য ডিলিট করা যায়নি।" };
   }
 }

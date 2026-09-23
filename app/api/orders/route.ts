@@ -3,6 +3,13 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { orderSchema } from "@/lib/order-validation";
+function generateOrderNumber() {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const seq = Math.floor(1000 + Math.random() * 9000);
+  return `ALR-${yy}${mm}-${seq}`;
+}
 
 export async function POST(request: Request) {
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
@@ -38,7 +45,7 @@ export async function POST(request: Request) {
       const advanceAmount = 200;
       const order = await tx.order.create({
         data: {
-          orderNumber: `ALR-${Date.now().toString().slice(-6)}`,
+          orderNumber: generateOrderNumber(),
           userId: session?.user?.id ?? null,
           customerName: data.customerName,
           customerPhone: data.customerPhone,

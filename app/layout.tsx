@@ -5,6 +5,8 @@ import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { PageTransition } from "@/components/PageTransition";
+import { ToastProvider } from "@/components/ui/Toast";
+import { CartProvider } from "@/components/CartProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,7 +46,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("aloron-theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";document.documentElement.classList.toggle("dark",t==="dark")}catch(e){}` }} />
       </head>
       <body className="min-h-full flex flex-col transition-colors duration-200">
-        <ThemeProvider><AuthProvider><PageTransition>{children}</PageTransition></AuthProvider></ThemeProvider>
+        <ThemeProvider><ToastProvider><CartProvider><AuthProvider><PageTransition>{children}</PageTransition></AuthProvider></CartProvider></ToastProvider></ThemeProvider>
       </body>
     </html>
   );

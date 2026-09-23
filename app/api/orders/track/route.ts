@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 
 const phoneSchema = z.string().trim().regex(/^(?:\+?88)?01[3-9]\d{8}$/);
-const orderNumberSchema = z.string().trim().regex(/^ALR-\d+(?:-\d+)?$/i);
+const orderNumberSchema = z.string().trim().regex(/^ALR-(?:\d{4}-\d{4}|\d+)$/i);
 
 function normalizePhone(value: string) {
   const digits = value.replace(/\D/g, "");
