@@ -1,4 +1,7 @@
 export type CatalogProduct = {
+  videoUrl?: string;
+  faqs?: [string, string][];
+  boxContents?: string[];
   id: string;
   productCode: string;
   name: string;

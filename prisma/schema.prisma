@@ -54,6 +54,7 @@ model Product {
   sellPrice     Decimal     @db.Decimal(10, 2)
   originalPrice Decimal     @db.Decimal(10, 2)
   stock         Int         @default(0)
+  videoUrl      String?
   images        String[]
   specs         Json?
   isActive      Boolean     @default(true)

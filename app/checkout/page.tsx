@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Check, Copy, CreditCard, MapPin, ShieldCheck } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
-import { getCatalogProduct, type CatalogProduct } from "@/lib/catalog";
+import type { CatalogProduct } from "@/lib/catalog";
 import { ImageOrIcon } from "@/components/shop/ImageOrIcon";
 
 const deliveryOptions = [
@@ -37,8 +37,10 @@ function CheckoutForm() {
     if (Number.isInteger(requestedQuantity) && requestedQuantity > 0) nextQuantity = Math.min(requestedQuantity, 20);
     setQuantity(nextQuantity);
     if (requestedProduct) {
-      const resolved = getCatalogProduct(requestedProduct);
-      setProduct(resolved ?? null);
+      fetch(`/api/products?lookup=${encodeURIComponent(requestedProduct)}`)
+        .then((res) => res.ok ? res.json() : null)
+        .then((data) => setProduct(data))
+        .catch(() => setProduct(null));
     } else {
       setProduct(null);
     }
