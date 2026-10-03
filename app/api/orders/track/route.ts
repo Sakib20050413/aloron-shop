@@ -27,12 +27,37 @@ export async function GET(request: Request) {
   if (!orderNumber.success || !phone.success) {
     return NextResponse.json({ error: "অর্ডার নম্বর অথবা মোবাইল নম্বরটি সঠিক নয়।" }, { status: 404 });
   }
+
   const order = await prisma.order.findFirst({
     where: { orderNumber: { equals: orderNumber.data.toUpperCase() }, customerPhone: phone.data },
-    select: { orderNumber: true, orderStatus: true, totalAmount: true, dueAmount: true, trackingNumber: true, createdAt: true, customerPhone: true, shippingAddress: true },
+    select: {
+      orderNumber: true,
+      status: true,
+      totalAmount: true,
+      dueAmount: true,
+      createdAt: true,
+      customerPhone: true,
+      deliveryAddress: true,
+    },
   });
+
   if (!order || normalizePhone(order.customerPhone) !== normalizePhone(phone.data)) {
     return NextResponse.json({ error: "অর্ডার নম্বর অথবা মোবাইল নম্বরটি সঠিক নয়।" }, { status: 404 });
   }
-  return NextResponse.json({ orders: [{ ...order, maskedPhone: maskPhone(order.customerPhone), maskedAddress: maskAddress(order.shippingAddress), totalAmount: Number(order.totalAmount), dueAmount: Number(order.dueAmount) }] });
+
+  return NextResponse.json({
+    orders: [
+      {
+        orderNumber: order.orderNumber,
+        orderStatus: order.status,
+        status: order.status,
+        maskedPhone: maskPhone(order.customerPhone),
+        maskedAddress: maskAddress(order.deliveryAddress),
+        totalAmount: Number(order.totalAmount),
+        dueAmount: Number(order.dueAmount),
+        trackingNumber: null,
+        createdAt: order.createdAt.toISOString(),
+      },
+    ],
+  });
 }

@@ -7,15 +7,24 @@ import { prisma } from "@/lib/prisma";
 
 const productSchema = z.object({
   name: z.string().trim().min(2).max(120),
-  productCode: z.string().trim().min(2).max(40).regex(/^[A-Z0-9-]+$/),
+  nameEn: z.string().trim().max(120).optional(),
+  code: z.string().trim().min(2).max(40).regex(/^[A-Z0-9-]+$/i).optional(),
+  productCode: z.string().trim().min(2).max(40).regex(/^[A-Z0-9-]+$/i).optional(),
   category: z.string().trim().min(2).max(60),
-  buyPrice: z.coerce.number().finite().nonnegative().max(10_000_000),
-  sellPrice: z.coerce.number().finite().nonnegative().max(10_000_000),
-  originalPrice: z.coerce.number().finite().nonnegative().max(10_000_000),
+  price: z.coerce.number().finite().nonnegative().max(10_000_000).optional(),
+  sellPrice: z.coerce.number().finite().nonnegative().max(10_000_000).optional(),
+  originalPrice: z.coerce.number().finite().nonnegative().max(10_000_000).optional(),
+  wholesaleCost: z.coerce.number().finite().nonnegative().max(10_000_000).optional(),
+  buyPrice: z.coerce.number().finite().nonnegative().max(10_000_000).optional(),
   stock: z.coerce.number().int().nonnegative().max(1_000_000),
-  imageData: z.string().regex(/^data:image\/(?:jpeg|png|webp|gif);base64,[A-Za-z0-9+/=]+$/).max(2_500_000),
+  imageData: z.string().optional(),
+  imageUrl: z.string().url().optional(),
+  videoUrl: z.string().url().optional().or(z.literal("")),
   description: z.string().trim().min(5).max(5000),
-  isFeatured: z.coerce.boolean().default(false),
+  specs: z.string().optional(),
+  whatsInTheBox: z.string().optional(),
+  isFeatured: z.coerce.boolean().default(true),
+  isTrending: z.coerce.boolean().default(false),
 });
 
 type ActionResult = { success: true } | { success: false; error: string };
@@ -26,14 +35,14 @@ async function requireAdmin(): Promise<ActionResult | true> {
   return true;
 }
 
-function generateSlug(name: string, productCode: string): string {
+function generateSlug(name: string, code: string): string {
   const asciiPart = name
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
-  const codePart = productCode.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "");
+  const codePart = code.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-|-$/g, "");
   if (asciiPart.length >= 2) return `${asciiPart}-${codePart}`;
   return `product-${codePart}`;
 }
@@ -44,24 +53,52 @@ export async function createProduct(formData: FormData): Promise<ActionResult> {
   const parsed = productSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { success: false, error: "সব তথ্য সঠিকভাবে পূরণ করুন।" };
   const data = parsed.data;
-  const existingByCode = await prisma.product.findUnique({ where: { productCode: data.productCode }, select: { id: true } });
-  if (existingByCode) return { success: false, error: `"${data.productCode}" কোডটি ইতিমধ্যে ব্যবহৃত হয়েছে। অন্য কোড দিন।` };
-  const slug = generateSlug(data.name, data.productCode);
+
+  const code = (data.code || data.productCode || "").toUpperCase();
+  if (!code) return { success: false, error: "প্রোডাক্ট কোড দিন।" };
+
+  const price = data.price ?? data.sellPrice;
+  if (price === undefined || price <= 0) return { success: false, error: "সঠিক বিক্রয় মূল্য দিন।" };
+
+  const existingByCode = await prisma.product.findUnique({ where: { code }, select: { id: true } });
+  if (existingByCode) return { success: false, error: `"${code}" কোডটি ইতিমধ্যে ব্যবহৃত হয়েছে। অন্য কোড দিন।` };
+
+  const slug = generateSlug(data.name, code);
   const existingBySlug = await prisma.product.findUnique({ where: { slug }, select: { id: true } });
   if (existingBySlug) return { success: false, error: "একই নাম ও কোডের পণ্য ইতিমধ্যে আছে।" };
+
+  const image = data.imageUrl || data.imageData || "/logo.png";
+  let parsedSpecs: Record<string, string> | null = null;
+  if (data.specs) {
+    try {
+      parsedSpecs = JSON.parse(data.specs);
+    } catch {
+      parsedSpecs = null;
+    }
+  }
+
+  const parsedBox: string[] = data.whatsInTheBox
+    ? data.whatsInTheBox.split("\n").map((s) => s.trim()).filter(Boolean)
+    : [];
+
   try {
     await prisma.product.create({
       data: {
         name: data.name,
-        productCode: data.productCode,
+        nameEn: data.nameEn || null,
+        code,
         category: data.category,
-        buyPrice: data.buyPrice,
-        sellPrice: data.sellPrice,
-        originalPrice: data.originalPrice,
+        price,
+        originalPrice: data.originalPrice ?? null,
+        wholesaleCost: data.wholesaleCost ?? data.buyPrice ?? null,
         stock: data.stock,
-        images: [data.imageData],
+        images: [image],
+        videoUrl: data.videoUrl || null,
         description: data.description,
+        specs: parsedSpecs ?? undefined,
+        whatsInTheBox: parsedBox,
         isFeatured: data.isFeatured,
+        isTrending: data.isTrending,
         slug,
       },
     });
@@ -75,14 +112,16 @@ export async function createProduct(formData: FormData): Promise<ActionResult> {
   }
 }
 
-export async function updateProduct(productId: string, changes: { stock?: number; isActive?: boolean; isFeatured?: boolean }): Promise<ActionResult> {
+export async function updateProduct(
+  productId: string,
+  changes: { stock?: number; isFeatured?: boolean; isTrending?: boolean; price?: number; isActive?: boolean }
+): Promise<ActionResult> {
   const access = await requireAdmin();
   if (access !== true) return access;
-  const parsedId = z.string().uuid().safeParse(productId);
-  const parsedChanges = z.object({ stock: z.number().int().nonnegative().max(1_000_000).optional(), isActive: z.boolean().optional(), isFeatured: z.boolean().optional() }).safeParse(changes);
-  if (!parsedId.success || !parsedChanges.success || Object.keys(parsedChanges.data).length === 0) return { success: false, error: "অবৈধ পরিবর্তন।" };
+  if (!productId) return { success: false, error: "অবৈধ পণ্য।" };
+
   try {
-    await prisma.product.update({ where: { id: productId }, data: parsedChanges.data });
+    await prisma.product.update({ where: { id: productId }, data: changes });
     revalidatePath("/");
     revalidatePath("/products");
     revalidatePath("/admin");
@@ -96,16 +135,12 @@ export async function updateProduct(productId: string, changes: { stock?: number
 export async function deleteProduct(productId: string): Promise<ActionResult> {
   const access = await requireAdmin();
   if (access !== true) return access;
-  const parsedId = z.string().uuid().safeParse(productId);
-  if (!parsedId.success) return { success: false, error: "অবৈধ পণ্য।" };
+  if (!productId) return { success: false, error: "অবৈধ পণ্য।" };
+
   try {
     const orderItems = await prisma.orderItem.count({ where: { productId } });
-    if (orderItems > 0) return { success: false, error: "অর্ডার ইতিহাস থাকা পণ্য ডিলিট করা যাবে না; নিষ্ক্রিয় করুন।" };
-    await prisma.$transaction([
-      prisma.review.deleteMany({ where: { productId } }),
-      prisma.wishlist.deleteMany({ where: { productId } }),
-      prisma.product.delete({ where: { id: productId } }),
-    ]);
+    if (orderItems > 0) return { success: false, error: "অর্ডার ইতিহাস থাকা পণ্য ডিলিট করা যাবে না।" };
+    await prisma.product.delete({ where: { id: productId } });
     revalidatePath("/");
     revalidatePath("/products");
     revalidatePath("/admin");

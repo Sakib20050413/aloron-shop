@@ -1,38 +1,58 @@
 import { prisma } from "@/lib/prisma";
 import { catalogProducts, type CatalogProduct } from "@/lib/catalog";
 
-function mapDbProduct(product: Awaited<ReturnType<typeof prisma.product.findFirst>> & Record<string, unknown>, index: number): CatalogProduct {
+function mapDbProduct(
+  product: Awaited<ReturnType<typeof prisma.product.findFirst>> & Record<string, unknown>,
+  index: number
+): CatalogProduct {
   const fallback = catalogProducts[index % catalogProducts.length];
+  const price = Number(product!.price ?? fallback?.price ?? 0);
+  const originalPrice = product!.originalPrice ? Number(product!.originalPrice) : fallback?.originalPrice ?? price;
+  const wholesaleCost = product!.wholesaleCost ? Number(product!.wholesaleCost) : fallback?.wholesaleCost ?? null;
+  const code = (product!.code as string) ?? fallback?.code ?? "GAD-01";
+  const whatsInTheBox = Array.isArray(product!.whatsInTheBox) && (product!.whatsInTheBox as string[]).length > 0
+    ? (product!.whatsInTheBox as string[])
+    : fallback?.whatsInTheBox ?? [];
+
   return {
     id: product!.id as string,
-    productCode: product!.productCode as string,
+    code,
+    productCode: code,
     name: product!.name as string,
+    nameEn: (product!.nameEn as string) ?? fallback?.nameEn ?? null,
     slug: product!.slug as string,
     description: product!.description as string,
     category: product!.category as string,
-    buyPrice: Number(product!.buyPrice),
-    sellPrice: Number(product!.sellPrice),
-    originalPrice: Number(product!.originalPrice),
+    price,
+    sellPrice: price,
+    originalPrice,
+    wholesaleCost,
+    buyPrice: wholesaleCost ?? price,
     stock: product!.stock as number,
-    icon: fallback?.icon ?? "\u{1F4E6}",
+    icon: fallback?.icon ?? "📦",
     accent: fallback?.accent ?? "from-cyan-100 to-blue-100",
-    images: Array.isArray(product!.images) && (product!.images as string[]).some((img) => img.startsWith("http") || img.startsWith("/"))
-      ? (product!.images as string[])
-      : (fallback?.images ?? []),
-    specs: Object.fromEntries(Object.entries((product!.specs as Record<string, unknown> | null) ?? {}).map(([key, value]) => [key, String(value)])),
-    videoUrl: (product as Record<string, unknown>).videoUrl as string | undefined ?? undefined,
-    faqs: ((product as Record<string, unknown>).faqs as [string, string][] | null) ?? undefined,
-    boxContents: Array.isArray((product as Record<string, unknown>).whatsInTheBox) && ((product as Record<string, unknown>).whatsInTheBox as string[]).length > 0
-      ? ((product as Record<string, unknown>).whatsInTheBox as string[])
-      : (((product as Record<string, unknown>).boxContents as string[] | null) ?? undefined),
+    images:
+      Array.isArray(product!.images) && (product!.images as string[]).length > 0
+        ? (product!.images as string[])
+        : fallback?.images ?? ["/logo.png"],
+    specs: (product!.specs as Record<string, string> | null) ?? fallback?.specs ?? {},
+    videoUrl: (product!.videoUrl as string | null) ?? null,
+    whatsInTheBox,
+    boxContents: whatsInTheBox,
+    isTrending: Boolean(product!.isTrending),
+    isFeatured: Boolean(product!.isFeatured),
   };
 }
 
 export async function getStoreProducts(): Promise<CatalogProduct[]> {
   try {
-    const products = await prisma.product.findMany({ where: { isActive: true }, orderBy: { createdAt: "desc" } });
-    if (!products.length) return [];
-    return products.map((product, index) => mapDbProduct(product as Record<string, unknown> & typeof product, index));
+    const products = await prisma.product.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    if (!products.length) return catalogProducts;
+    return products.map((product, index) =>
+      mapDbProduct(product as Record<string, unknown> & typeof product, index)
+    );
   } catch (error) {
     console.error("Catalog database read failed:", error);
     return catalogProducts;
@@ -41,11 +61,25 @@ export async function getStoreProducts(): Promise<CatalogProduct[]> {
 
 export async function getStoreProduct(idOrSlug: string): Promise<CatalogProduct | null> {
   try {
-    const product = await prisma.product.findFirst({ where: { isActive: true, OR: [{ id: idOrSlug }, { slug: idOrSlug }] } });
-    if (!product) return null;
+    const product = await prisma.product.findFirst({
+      where: {
+        OR: [{ id: idOrSlug }, { slug: idOrSlug }, { code: idOrSlug }],
+      },
+    });
+    if (!product) {
+      return (
+        catalogProducts.find(
+          (item) => item.id === idOrSlug || item.slug === idOrSlug || item.code === idOrSlug
+        ) ?? null
+      );
+    }
     return mapDbProduct(product as Record<string, unknown> & typeof product, 0);
   } catch (error) {
     console.error("Product database read failed:", error);
-    return catalogProducts.find((item) => item.id === idOrSlug || item.slug === idOrSlug) ?? null;
+    return (
+      catalogProducts.find(
+        (item) => item.id === idOrSlug || item.slug === idOrSlug || item.code === idOrSlug
+      ) ?? null
+    );
   }
 }

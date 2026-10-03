@@ -7,18 +7,18 @@ import { useEffect, useRef, useState } from "react";
 
 const defaultSlides = [
   {
-    id: "pocket-turbo-mini-fan",
-    eyebrow: "গরমের সেরা সঙ্গী · GAD-001",
-    title: "চরম গরমে তাৎক্ষণিক শীতল বাতাস",
-    product: "পকেট টার্বো ফ্যান",
-    price: "৳৬৯৯",
-    discount: "১৩% ছাড়",
-    image: "https://images.unsplash.com/photo-1583225275995-0f09b8f0b7a7?auto=format&fit=crop&w=1200&q=85",
+    id: "qcy-gt2-amoled-smart-watch",
+    eyebrow: "২০২৬ স্মার্ট ড্রপ · GAD-WATCH-01",
+    title: "QCY GT2 ফ্ল্যাগশিপ স্মার্টওয়াচ",
+    product: "১.৪৩\" প্রিমিয়াম AMOLED ডিসপ্লে ও মেটাল বডি",
+    price: "৳২,৯৯০",
+    discount: "২০% ছাড়",
+    image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=1200&q=85",
     accent: "from-cyan-500/20 via-sky-400/10 to-transparent",
   },
   {
     id: "65w-gan-fast-charger",
-    eyebrow: "এক চার্জারেই সব ডিভাইস · GAD-002",
+    eyebrow: "এক চার্জারেই সব ডিভাইস · GAD-CHG-01",
     title: "এক চার্জারেই ল্যাপটপ ও ফোন",
     product: "আল্ট্রা ফাস্ট চার্জিং",
     price: "৳১,৭৯০",
@@ -28,7 +28,7 @@ const defaultSlides = [
   },
   {
     id: "airbeat-wireless-earbuds",
-    eyebrow: "সাউন্ড যা আপনার · GAD-004",
+    eyebrow: "সাউন্ড যা আপনার পছন্দের · GAD-AUD-01",
     title: "ডিপ ব্যাস ও নয়েজ ক্যান্সেলেশন",
     product: "সারাদিনের ব্যাটারি ব্যাকআপ",
     price: "৳১,৪৯০",
@@ -77,7 +77,7 @@ export function HeroBanner({ cmsSlides = [] }: { cmsSlides?: HeroSlideRecord[] }
         ctaText: item.ctaText,
         ctaLink: item.ctaLink,
       }))
-    : defaultSlides.map((item) => ({ ...item, ctaText: "কালেকশন দেখন", ctaLink: `/product/${item.id}` }));
+    : defaultSlides.map((item) => ({ ...item, ctaText: "কালেকশন দেখুন", ctaLink: `/product/${item.id}` }));
 
   const slideCount = slides.length;
   const [active, setActive] = useState(0);

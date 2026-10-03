@@ -47,7 +47,7 @@ export function ProductDetailExperience({ product, whatsappUrl }: Props) {
   return (
     <>
       <div className="mt-8 grid gap-12 lg:grid-cols-2">
-        <ProductGallery name={product.name} images={product.images} accent={product.accent} />
+        <ProductGallery name={product.name} images={product.images} accent={product.accent ?? "from-cyan-100 to-blue-100"} />
         <div>
           <p className="text-sm font-bold uppercase tracking-[.2em] text-cyan-600">{product.productCode} · {product.category}</p>
           <h1 className="mt-3 text-balance text-4xl font-black tracking-tight text-stone-950 dark:text-white">{product.name}</h1>

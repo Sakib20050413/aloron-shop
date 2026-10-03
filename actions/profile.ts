@@ -8,8 +8,6 @@ import { prisma } from "@/lib/prisma";
 const profileSchema = z.object({
   name: z.string().trim().min(2).max(100),
   phone: z.string().trim().regex(/^01\d{9}$/, "সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন।"),
-  address: z.string().trim().min(5).max(500),
-  city: z.string().trim().min(2).max(80),
 });
 
 export async function updateProfile(formData: FormData) {
@@ -18,7 +16,10 @@ export async function updateProfile(formData: FormData) {
   const parsed = profileSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { success: false, error: "প্রোফাইলের তথ্য সঠিকভাবে পূরণ করুন।" };
   try {
-    await prisma.user.update({ where: { id: session.user.id }, data: parsed.data });
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { name: parsed.data.name, phone: parsed.data.phone },
+    });
     revalidatePath("/dashboard");
     return { success: true };
   } catch (error) {

@@ -1,111 +1,172 @@
-import { PrismaClient, UserRole } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const products = [
-  {
-    productCode: "GAD-001",
-    name: "Pocket Turbo Mini Fan",
-    slug: "pocket-turbo-mini-fan",
-    description: "A quiet, rechargeable mini fan for your desk, bag, or commute.",
-    category: "Mini Fan",
-    buyPrice: 420,
-    sellPrice: 699,
-    originalPrice: 799,
-    stock: 24,
-    images: ["https://images.unsplash.com/photo-1583225275995-0f09b8f0b7a7?auto=format&fit=crop&w=1200&q=85"],
-    specs: { battery: "2000mAh", power: "5W", warranty: "6 months", weight: "180g" },
-  },
-  {
-    productCode: "GAD-002",
-    name: "65W GaN Fast Charger",
-    slug: "65w-gan-fast-charger",
-    description: "Compact GaN charger with fast USB-C power delivery for modern devices.",
-    category: "Charger",
-    buyPrice: 1250,
-    sellPrice: 1790,
-    originalPrice: 1990,
-    stock: 18,
-    images: ["https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85"],
-    specs: { ports: "2x USB-C, 1x USB-A", power: "65W", warranty: "1 year", weight: "105g" },
-  },
-  {
-    productCode: "GAD-003",
-    name: "Braided USB-C Cable",
-    slug: "braided-usb-c-cable",
-    description: "Durable 1.8m braided cable with high-speed charging support.",
-    category: "Cable",
-    buyPrice: 180,
-    sellPrice: 349,
-    originalPrice: 399,
-    stock: 62,
-    images: ["https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85"],
-    specs: { length: "1.8m", connector: "USB-C to USB-C", power: "100W", warranty: "6 months" },
-  },
-  {
-    productCode: "GAD-004",
-    name: "AirBeat Wireless Earbuds",
-    slug: "airbeat-wireless-earbuds",
-    description: "Pocket-sized earbuds with low-latency audio and a clear microphone.",
-    category: "Audio",
-    buyPrice: 920,
-    sellPrice: 1490,
-    originalPrice: 1690,
-    stock: 11,
-    images: ["https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1200&q=85"],
-    specs: { battery: "30 hours", connectivity: "Bluetooth 5.3", warranty: "1 year", weight: "42g" },
-  },
-];
-
-const heroSlides = [
-  { title: "চরম গরমে তাৎক্ষণিক শীতল বাতাস", subtitle: "গরমের সেরা সঙ্গী - GAD-001", badgeText: "পকেট টার্বো ফ্যান", discountTag: "১৩% ছাড়", priceText: "৳৬৯৯", ctaText: "কালেকশন দেখুন", ctaLink: "/product/pocket-turbo-mini-fan", imageUrl: products[0].images[0], order: 0 },
-  { title: "এক চার্জারেই ল্যাপটপ ও ফোন", subtitle: "এক চার্জার · সব ডিভাইস · GAD-002", badgeText: "৬৫W GaN ফাস্ট চার্জার", discountTag: "১০% ছাড়", priceText: "৳১,৭৯০", ctaText: "এখনই কিনুন", ctaLink: "/product/65w-gan-fast-charger", imageUrl: products[1].images[0], order: 1 },
-  { title: "ডিপ ব্যাস ও নয়েজ ক্যান্সেলেশন", subtitle: "সাউন্ড, যা আপনার · GAD-004", badgeText: "AirBeat Wireless Earbuds", discountTag: "১২% ছাড়", priceText: "৳১,৪৯০", ctaText: "কালেকশন দেখুন", ctaLink: "/product/airbeat-wireless-earbuds", imageUrl: products[3].images[0], order: 2 },
-];
-
 async function main() {
-  const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
-  const adminPassword = process.env.ADMIN_PASSWORD;
-  if (!adminEmail || !adminPassword || adminPassword.length < 12) {
-    throw new Error("ADMIN_EMAIL and ADMIN_PASSWORD (minimum 12 characters) are required to seed an admin account.");
-  }
-  const passwordHash = await bcrypt.hash(adminPassword, 12);
-
-  await prisma.user.upsert({
-    where: { email: adminEmail },
-    update: { role: UserRole.ADMIN, passwordHash },
+  // Store settings
+  await prisma.storeSetting.upsert({
+    where: { id: "global" },
+    update: {},
     create: {
-      email: adminEmail,
-      name: "Aloron Admin",
-      passwordHash,
-      role: UserRole.ADMIN,
+      id: "global",
+      announcementText: "ঢাকা থেকে সারাদেশে দ্রুততম হোম ডেলিভারি | হটলাইন: ০১৬১৫৮৬৯৭২৪",
+      supportPhone: "01615869724",
+      supportWhatsApp: "8801615869724",
+      deliveryInsideDhaka: 70,
+      deliveryOutsideDhaka: 150,
+      advanceBkashAmount: 200,
+      bkashNumber: "01615869724",
+      bkashAccountType: "Personal",
     },
   });
 
+  // Products
+  const products = [
+    {
+      code: "GAD-WATCH-01",
+      slug: "qcy-gt2-amoled-smart-watch",
+      name: "QCY GT2 AMOLED Smart Watch",
+      nameEn: "QCY GT2 AMOLED Smart Watch",
+      category: "SMART GADGET",
+      price: 2990,
+      originalPrice: 3700,
+      wholesaleCost: 2400,
+      stock: 10,
+      description: "বাজেটের মধ্যে প্রিমিয়াম জিংক অ্যালয় মেটাল ফ্রেম ও চোখ জুড়ানো ১.৪৩\" অ্যামোলেড ডিসপ্লে সমৃদ্ধ ফ্ল্যাগশিপ স্মার্টওয়াচ।",
+      specs: {
+        Display: "1.43 inch HD AMOLED 466x466",
+        Body: "Zinc Alloy Metallic Frame",
+        Battery: "Up to 6 days daily use",
+        Waterproof: "5ATM Waterproof",
+        Calling: "Bluetooth Calling & AI Assistant",
+      },
+      whatsInTheBox: [
+        "১x QCY GT2 স্মার্টওয়াচ",
+        "১x প্রিমিয়াম সিলিকন স্ট্র্যাপ",
+        "১x ম্যাগনেটিক চার্জার ক্যাবল",
+        "১x ইউজার গাইড ও ওয়ারেন্টি কার্ড",
+      ],
+      images: [
+        "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=1200&q=85",
+      ],
+      isFeatured: true,
+      isTrending: true,
+    },
+    {
+      code: "GAD-CHG-01",
+      slug: "65w-gan-fast-charger",
+      name: "65W GaN Fast Charger",
+      nameEn: "65W GaN Fast Charger",
+      category: "CHARGER",
+      price: 1790,
+      originalPrice: 1990,
+      wholesaleCost: 1300,
+      stock: 15,
+      description: "এক চার্জারেই ল্যাপটপ ও ফোন ফাস্ট চার্জ করার জন্য সেরা GaN প্রযুক্তি।",
+      specs: {
+        Output: "65W Max GaN",
+        Ports: "2x USB-C, 1x USB-A",
+        Protection: "Over-voltage & Over-heat protection",
+      },
+      whatsInTheBox: ["১x 65W GaN চার্জার", "১x ইউজার ম্যানুয়াল"],
+      images: [
+        "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85",
+      ],
+      isFeatured: true,
+      isTrending: false,
+    },
+    {
+      code: "GAD-AUD-01",
+      slug: "airbeat-wireless-earbuds",
+      name: "AirBeat Wireless Earbuds",
+      nameEn: "AirBeat Wireless Earbuds",
+      category: "AUDIO",
+      price: 1490,
+      originalPrice: 1690,
+      wholesaleCost: 950,
+      stock: 20,
+      description: "ডিপ ব্যাস, ট্রু ওয়্যারলেস স্টেরিও এবং সারাদিনের শক্তিশালী ব্যাটারি ব্যাকআপ।",
+      specs: {
+        Driver: "13mm Dynamic Bass",
+        Battery: "Up to 28 hours with charging case",
+        Bluetooth: "v5.3 Low Latency",
+      },
+      whatsInTheBox: [
+        "১x AirBeat ইয়ারবাডস",
+        "১x চার্জিং কেস",
+        "১x টাইপ-সি ক্যাবল",
+        "২ জোড়া অতিরিক্ত ইয়ারটিপস",
+      ],
+      images: [
+        "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=1200&q=85",
+      ],
+      isFeatured: true,
+      isTrending: true,
+    },
+    {
+      code: "GAD-CAB-01",
+      slug: "braided-usb-c-cable",
+      name: "Braided Fast Type-C Cable",
+      nameEn: "Braided Fast Type-C Cable",
+      category: "CABLE",
+      price: 349,
+      originalPrice: 399,
+      wholesaleCost: 180,
+      stock: 50,
+      description: "টেকসই নাইলন ব্রেইডেড প্রিমিয়াম ফাস্ট চার্জিং ও ডেটা ট্রান্সফার ক্যাবল।",
+      specs: {
+        Length: "1.2 Meter",
+        Power: "60W Fast Charging",
+        Material: "High-density braided nylon",
+      },
+      whatsInTheBox: ["১x ব্রেইডেড টাইপ-সি ক্যাবল"],
+      images: [
+        "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=1200&q=85",
+      ],
+      isFeatured: true,
+      isTrending: false,
+    },
+  ];
+
   for (const product of products) {
     await prisma.product.upsert({
-      where: { productCode: product.productCode },
+      where: { code: product.code },
       update: product,
       create: product,
     });
   }
 
-  if ((await prisma.heroSlide.count()) === 0) {
-    await prisma.heroSlide.createMany({ data: heroSlides.map((slide) => ({ ...slide, isActive: true })) });
-  }
-  await prisma.siteSettings.upsert({
-    where: { id: "global" },
-    update: {},
-    create: { id: "global" },
+  // Hero Slide
+  const heroSlide = {
+    title: "QCY GT2 ফ্ল্যাগশিপ স্মার্টওয়াচ",
+    subtitle: "১.৪৩\" প্রিমিয়াম AMOLED ডিসপ্লে ও মেটাল বডি",
+    badgeText: "২০২৬ স্মার্ট ড্রপ",
+    discountTag: "২০% ছাড়",
+    priceText: "৳২,৯৯০",
+    ctaLink: "/product/qcy-gt2-amoled-smart-watch",
+    ctaText: "এখনই কিনুন",
+    imageUrl:
+      "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=1200&q=85",
+    order: 0,
+    isActive: true,
+  };
+
+  const existingSlide = await prisma.heroSlide.findFirst({
+    where: { title: heroSlide.title },
   });
 
-  console.log(`Seeded admin ${adminEmail}, ${products.length} products, and ${heroSlides.length} hero slides.`);
+  if (!existingSlide) {
+    await prisma.heroSlide.create({ data: heroSlide });
+  }
+
+  console.log("Database seeded successfully with clean authentic products!");
 }
 
 main()
-  .catch((error) => {
-    console.error("Database seed failed:", error);
+  .catch((e) => {
+    console.error(e);
     process.exit(1);
   })
-  .finally(() => prisma.$disconnect());
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

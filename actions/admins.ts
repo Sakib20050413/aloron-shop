@@ -30,7 +30,7 @@ export async function promoteAdmin(emailInput: string): Promise<ActionResult> {
 export async function demoteAdmin(userId: string): Promise<ActionResult> {
   const access = await requireAdmin();
   if (access !== true) return access;
-  const parsedId = z.string().uuid().safeParse(userId);
+  const parsedId = z.string().min(1).safeParse(userId);
   if (!parsedId.success) return { success: false, error: "অবৈধ অ্যাডমিন।" };
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, role: true } });
   if (!user || user.role !== "ADMIN") return { success: false, error: "অ্যাডমিন পাওয়া যায়নি।" };

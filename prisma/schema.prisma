@@ -1,21 +1,16 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-enum UserRole {
+enum Role {
   CUSTOMER
   ADMIN
-}
-
-enum PaymentStatus {
-  UNPAID
-  ADVANCE_PAID
-  FULLY_PAID
 }
 
 enum OrderStatus {
@@ -28,60 +23,38 @@ enum OrderStatus {
 }
 
 model User {
-  id           String     @id @default(uuid())
+  id           String    @id @default(cuid())
   name         String
-  email        String     @unique
-  passwordHash String?
-  image        String?
+  email        String    @unique
   phone        String?
-  address      String?
-  city         String?
-  role         UserRole   @default(CUSTOMER)
+  passwordHash String?
+  role         Role      @default(CUSTOMER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
   orders       Order[]
-  reviews      Review[]
-  wishlists    Wishlist[]
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
 }
 
 model Product {
-  id            String      @id @default(uuid())
-  productCode   String      @unique
-  name          String
-  nameEn        String?
-  slug          String      @unique
-  description   String      @db.Text
-  category      String
-  buyPrice      Decimal     @db.Decimal(10, 2)
-  sellPrice     Decimal     @db.Decimal(10, 2)
-  originalPrice Decimal     @db.Decimal(10, 2)
-  stock         Int         @default(0)
-  videoUrl      String?
-  images        String[]
-  specs         Json?
-  whatsInTheBox String[]    @default([])
-  isActive      Boolean     @default(true)
-  isFeatured    Boolean     @default(false)
-  orderItems    OrderItem[]
-  reviews       Review[]
-  wishlists     Wishlist[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-}
-
-model SiteSettings {
-  id              String   @id @default("global")
-  noticeText      String   @default("ঢাকা থেকে সারাদেশে দ্রুততম হোম ডেলিভারি")
-  heroTitle       String   @default("প্রয়োজনীয় সব স্মার্ট গ্যাজেট ও ইলেকট্রনিক্স")
-  heroSubtitle    String   @default("১০০% টেস্টেড গ্যাজেট, মাত্র ২০০ টাকা বিকাশ অগ্রিমে বুকিং।")
-  bkashNumber     String   @default("01615869724")
-  advanceFee      Decimal  @default(200) @db.Decimal(10, 2)
-  contactNumber   String   @default("01615869724")
-  whatsappNumber  String   @default("01615869724")
-  address         String   @default("ঢাকা, বাংলাদেশ")
-  insideDhakaFee  Decimal  @default(70) @db.Decimal(10, 2)
-  outsideDhakaFee Decimal  @default(150) @db.Decimal(10, 2)
-  updatedAt       DateTime @updatedAt
+  id              String      @id @default(cuid())
+  code            String      @unique // e.g. "GAD-WATCH-01"
+  slug            String      @unique // e.g. "qcy-gt2-amoled-smart-watch"
+  name            String      // Bengali title
+  nameEn          String?     // English title
+  category        String      // "SMART GADGET", "CHARGER", "AUDIO", "CABLE"
+  price           Float
+  originalPrice   Float?
+  wholesaleCost   Float?
+  stock           Int         @default(15)
+  images          String[]    // Array of image URLs
+  videoUrl        String?     // Optional product video URL
+  description     String
+  specs           Json?       // e.g. {"Display": "1.43\" AMOLED", "Waterproof": "5ATM"}
+  whatsInTheBox   String[]    // Dynamic unboxing list
+  isTrending      Boolean     @default(false)
+  isFeatured      Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  orderItems      OrderItem[]
 }
 
 model HeroSlide {
@@ -100,71 +73,48 @@ model HeroSlide {
   updatedAt   DateTime @updatedAt
 }
 
-model Coupon {
-  id             String   @id @default(uuid())
-  code           String   @unique
-  discountType   String
-  discountValue  Decimal  @db.Decimal(10, 2)
-  minOrderAmount Decimal  @default(0) @db.Decimal(10, 2)
-  isActive       Boolean  @default(true)
-  createdAt      DateTime @default(now())
-}
-
 model Order {
-  id              String        @id @default(uuid())
-  orderNumber     String        @unique
-  userId          String?
-  user            User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
-  customerName    String
-  customerPhone   String
-  shippingAddress String
-  deliveryZone    String
-  deliveryFee     Decimal       @db.Decimal(10, 2)
-  subtotal        Decimal       @db.Decimal(10, 2)
-  totalAmount     Decimal       @db.Decimal(10, 2)
-  advanceAmount   Decimal       @default(200.00) @db.Decimal(10, 2)
-  dueAmount       Decimal       @db.Decimal(10, 2)
-  bKashSender     String?
-  transactionId   String?
-  trackingNumber  String?
-  couponCode      String?
-  discountAmount  Decimal       @default(0) @db.Decimal(10, 2)
-  paymentStatus   PaymentStatus @default(UNPAID)
-  orderStatus     OrderStatus   @default(PENDING)
-  notes           String?
-  items           OrderItem[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id                String      @id @default(cuid())
+  orderNumber       String      @unique // Format: ALR-YYMM-XXXX
+  customerName      String
+  customerPhone     String
+  deliveryAddress   String
+  deliveryZone      String      // "inside_dhaka" | "outside_dhaka"
+  deliveryFee       Float
+  totalAmount       Float
+  advancePaid       Float       @default(200)
+  dueAmount         Float
+  bkashSenderNumber String
+  bkashTrxId        String
+  status            OrderStatus @default(PENDING)
+  userId            String?
+  user              User?       @relation(fields: [userId], references: [id])
+  items             OrderItem[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 }
 
 model OrderItem {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   orderId   String
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id])
+  name      String
+  price     Float
   quantity  Int
-  unitPrice Decimal  @db.Decimal(10, 2)
-  unitCost  Decimal  @db.Decimal(10, 2)
+  image     String?
 }
 
-model Review {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  rating    Int
-  comment   String   @db.Text
-  createdAt DateTime @default(now())
-}
-
-model Wishlist {
-  id        String  @id @default(uuid())
-  userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, productId])
+model StoreSetting {
+  id                   String   @id @default("global")
+  announcementText     String   @default("ঢাকা থেকে সারাদেশে দ্রুততম হোম ডেলিভারি | হটলাইন: ০১৬১৫৮৬৯৭২৪")
+  supportPhone         String   @default("01615869724")
+  supportWhatsApp      String   @default("8801615869724")
+  deliveryInsideDhaka  Float    @default(70)
+  deliveryOutsideDhaka Float    @default(150)
+  advanceBkashAmount   Float    @default(200)
+  bkashNumber          String   @default("01615869724")
+  bkashAccountType     String   @default("Personal")
+  updatedAt            DateTime @updatedAt
 }

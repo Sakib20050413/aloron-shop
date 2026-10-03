@@ -81,7 +81,6 @@ const providers: Provider[] = [
         id: user.id,
         email: user.email,
         name: user.name,
-        image: user.image,
         role,
       };
     },
@@ -102,11 +101,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           const savedUser = await prisma.user.upsert({
             where: { email },
-            update: { name: user.name ?? "Aloron customer", image: user.image, ...(role ? { role } : {}) },
+            update: { name: user.name ?? "Aloron customer", ...(role ? { role } : {}) },
             create: {
               email,
               name: user.name ?? "Aloron customer",
-              image: user.image,
               ...(role ? { role } : {}),
             },
           });

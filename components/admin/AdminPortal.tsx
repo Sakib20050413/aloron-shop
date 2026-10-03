@@ -55,8 +55,8 @@ export function AdminPortal({ products, orders, settings, asOf, customers, slide
   </div>;
 }
 
-function Field({ name, label, value, type = "text" }: { name: string; label: string; value: string; type?: string }) {
-  return <label className="text-sm font-bold">{label}<input required name={name} defaultValue={value} type={type} className="field mt-2" /></label>;
+function Field({ name, label, value = "", type = "text" }: { name: string; label: string; value?: string; type?: string }) {
+  return <label className="text-sm font-bold">{label}<input required name={name} defaultValue={value ?? ""} type={type} className="field mt-2" /></label>;
 }
 function Kpi({ label, value }: { label: string; value: string }) {
   return <div className="rounded-2xl border border-slate-200 p-5 dark:border-white/10"><p className="text-sm text-slate-500">{label}</p><p className="mt-2 text-2xl font-black">{value}</p></div>;
