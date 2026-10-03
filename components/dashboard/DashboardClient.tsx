@@ -12,7 +12,7 @@ type DashboardOrder = {
   advanceAmount: number;
   dueAmount: number;
   paymentStatus: string;
-  orderStatus: "PENDING" | "CONFIRMED" | "SHIPPED" | "DELIVERED" | "CANCELLED";
+  orderStatus: "PENDING" | "CONFIRMED" | "PACKAGING" | "SHIPPED" | "DELIVERED" | "CANCELLED";
   trackingNumber: string | null;
   createdAt: string;
   items: { id: string; quantity: number; unitPrice: number; productName: string; image: string | null }[];
@@ -39,7 +39,7 @@ export function DashboardClient({ profile, orders }: { profile: Profile; orders:
 
 function OrderCard({ order }: { order: DashboardOrder }) {
   const [copied, setCopied] = useState(false);
-  const active = order.orderStatus === "CANCELLED" ? -1 : steps.findIndex(([status]) => status === order.orderStatus);
+  const active = order.orderStatus === "CANCELLED" ? -1 : order.orderStatus === "PACKAGING" ? 1 : steps.findIndex(([status]) => status === order.orderStatus);
   const copyTracking = async () => { if (!order.trackingNumber) return; await navigator.clipboard.writeText(order.trackingNumber); setCopied(true); window.setTimeout(() => setCopied(false), 1600); };
   return <article className="rounded-3xl border border-slate-200 p-6 shadow-sm dark:border-white/10"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-widest text-slate-400">Order history</p><h2 className="mt-1 text-xl font-black">#{order.orderNumber}</h2><p className="mt-1 text-xs text-slate-500">{new Intl.DateTimeFormat("bn-BD", { dateStyle: "medium" }).format(new Date(order.createdAt))}</p></div><span className="rounded-full bg-cyan-100 px-3 py-1 text-xs font-bold text-cyan-700">{order.orderStatus}</span></div><div className="mt-8 grid gap-6 md:grid-cols-4">{steps.map(([status, label, Icon], index) => <div key={status} className="relative"><div className={`grid size-11 place-items-center rounded-full ${index <= active ? "bg-cyan-500 text-slate-950" : "bg-slate-100 text-slate-400 dark:bg-white/10"}`}><Icon size={18} /></div><p className="mt-3 text-xs font-bold leading-5">{label}</p>{status === "SHIPPED" && order.trackingNumber && <div className="mt-2 flex items-center gap-1 text-[11px] text-cyan-600"><span>{order.trackingNumber}</span><button type="button" onClick={() => void copyTracking()} aria-label="Copy tracking code">{copied ? <Check size={13} /> : <Copy size={13} />}</button></div>}</div>)}</div><div className="mt-7 grid gap-3 border-t border-slate-200 pt-5 text-sm dark:border-white/10">{order.items.map((item) => <div key={item.id} className="flex items-center gap-3"><span className="grid size-10 place-items-center overflow-hidden rounded-lg bg-cyan-50">{item.image ?   <Image src={item.image} alt="" width={40} height={40} unoptimized className="size-full object-cover" /> : "📦"}</span><span className="font-semibold">{item.productName} × {item.quantity}</span><span className="ml-auto">৳{item.unitPrice.toLocaleString("en-BD")}</span></div>)}<div className="mt-2 flex justify-between font-bold"><span>মোট</span><span>৳{order.totalAmount.toLocaleString("en-BD")}</span></div><div className="flex justify-between text-emerald-600"><span>অগ্রিম প্রদান</span><span>৳{order.advanceAmount.toLocaleString("en-BD")}</span></div><div className="flex justify-between"><span>ক্যাশ অন ডেলিভারি</span><span>৳{order.dueAmount.toLocaleString("en-BD")}</span></div></div></article>;
 }

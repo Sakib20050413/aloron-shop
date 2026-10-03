@@ -11,7 +11,11 @@ export default function LoginForm({ googleConfigured }: { googleConfigured: bool
   const [error, setError] = useState("");
   const [googleUnavailable, setGoogleUnavailable] = useState(false);
   const [loading, setLoading] = useState(false);
-  const ownerEmails = ["mdnajmussakib2003@gmail.com", "md.najmus.sakib.rahatul.2005@gmail.com"];
+  const ownerEmails = [
+    "mdnajmussakib2003@gmail.com",
+    "md.najmus.sakib.rahatul.2005@gmail.com",
+    "rakibtoha47@gmail.com",
+  ];
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

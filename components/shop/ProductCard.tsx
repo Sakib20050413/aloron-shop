@@ -3,21 +3,16 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Heart, ShoppingBag } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { CatalogProduct } from "@/lib/catalog";
 import { ImageOrIcon } from "@/components/shop/ImageOrIcon";
 
+import { useCart } from "@/components/CartProvider";
+
 export function ProductCard({ product }: { product: CatalogProduct }) {
   const router = useRouter();
-  const [remaining, setRemaining] = useState(2 * 60 * 60 + 47 * 60);
-  useEffect(() => {
-    const interval = window.setInterval(() => setRemaining((value) => (value > 0 ? value - 1 : 2 * 60 * 60 + 47 * 60)), 1000);
-    return () => window.clearInterval(interval);
-  }, []);
-  const hours = Math.floor(remaining / 3600).toString().padStart(2, "0");
-  const minutes = Math.floor((remaining % 3600) / 60).toString().padStart(2, "0");
-  const seconds = (remaining % 60).toString().padStart(2, "0");
+  const { wishlist, toggleWishlist } = useCart();
+  const isWishlisted = Boolean(wishlist[product.id]);
   const whatsappText = `আসসালামু আলাইকুম, আমি আলোড়ন অনলাইন শপিং থেকে ${product.name} (Code: ${product.productCode}) অর্ডার করতে চাই। ডেলিভারি ডিটেইলস...`;
   const whatsappUrl = `https://wa.me/8801615869724?text=${encodeURIComponent(whatsappText)}`;
   return (
@@ -29,7 +24,18 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         
         <motion.span animate={{ boxShadow: ["0 0 0 0 rgba(245,158,11,.35)", "0 0 0 7px rgba(245,158,11,0)", "0 0 0 0 rgba(245,158,11,0)"] }} transition={{ duration: 2.2, repeat: Infinity }} className="absolute bottom-3 left-3 rounded-full bg-amber-400 px-2.5 py-1 text-[10px] font-black text-slate-950">১০% ছাড়</motion.span>
         {product.stock < 20 && <motion.span animate={{ opacity: [0.7, 1, 0.7] }} transition={{ duration: 1.4, repeat: Infinity }} className="absolute bottom-3 right-3 rounded-full bg-rose-500 px-2.5 py-1 text-[10px] font-black text-white">স্টক সীমিত</motion.span>}
-        <button type="button" aria-label={`Add ${product.name} to wishlist`} onClick={(event) => event.stopPropagation()} className="relative z-10 grid size-10 place-items-center rounded-full bg-slate-950/80 text-slate-200 transition-colors duration-150 hover:text-cyan-300 hover:shadow-[0_0_16px_rgba(6,182,212,0.25)] active:scale-[0.97]"><Heart size={17} /></button>
+        <button
+          type="button"
+          aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
+          onClick={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+            toggleWishlist(product.id);
+          }}
+          className="absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-full bg-slate-950/70 text-slate-200 backdrop-blur-sm transition-colors duration-150 hover:text-cyan-300 hover:shadow-[0_0_16px_rgba(6,182,212,0.25)] active:scale-[0.97]"
+        >
+          <Heart size={16} className={isWishlisted ? "fill-rose-500 text-rose-500" : ""} />
+        </button>
       </div>
       <div className="relative z-10 p-3 sm:p-5">
         <p className="text-[11px] font-bold uppercase tracking-[.18em] text-slate-400">{product.productCode}</p>

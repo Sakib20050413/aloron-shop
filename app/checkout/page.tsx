@@ -7,6 +7,7 @@ import { Check, Copy, CreditCard, MapPin, ShieldCheck } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import type { CatalogProduct } from "@/lib/catalog";
 import { ImageOrIcon } from "@/components/shop/ImageOrIcon";
+import { useCart } from "@/components/CartProvider";
 
 const deliveryOptions = [
   { value: "ঢাকার ভেতরে", fee: 70, label: "ঢাকার ভেতরে — ৳৭০" },
@@ -14,6 +15,7 @@ const deliveryOptions = [
 ];
 
 function CheckoutForm() {
+  const { items: cartItems, clearCart } = useCart();
   const [submitted, setSubmitted] = useState(false);
   const [orderNumber, setOrderNumber] = useState("");
   const [orderIdCopied, setOrderIdCopied] = useState(false);
@@ -30,22 +32,56 @@ function CheckoutForm() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const requestedProduct = params.get("product");
-    const requestedQuantity = Number(params.get("quantity") ?? "1");
-    let nextQuantity = 1;
-    if (Number.isInteger(requestedQuantity) && requestedQuantity > 0) nextQuantity = Math.min(requestedQuantity, 20);
-    setQuantity(nextQuantity);
-    if (requestedProduct) {
-      fetch(`/api/products?lookup=${encodeURIComponent(requestedProduct)}`)
-        .then((res) => res.ok ? res.json() : null)
-        .then((data) => setProduct(data))
-        .catch(() => setProduct(null));
-    } else {
-      setProduct(null);
-    }
-    setLoading(false);
-  }, []);
+    const resolveProduct = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const requestedProduct = params.get("product");
+      const requestedQuantity = Number(params.get("quantity") ?? "1");
+      if (Number.isInteger(requestedQuantity) && requestedQuantity > 0) {
+        setQuantity(Math.min(requestedQuantity, 20));
+      }
+
+      try {
+        if (requestedProduct) {
+          const res = await fetch(`/api/products?lookup=${encodeURIComponent(requestedProduct)}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && !data.error && !Array.isArray(data)) {
+              setProduct(data);
+              return;
+            }
+          }
+          const allRes = await fetch("/api/products");
+          if (allRes.ok) {
+            const list: CatalogProduct[] = await allRes.json();
+            const found = list.find((p) => p.slug === requestedProduct || p.id === requestedProduct || p.productCode === requestedProduct);
+            if (found) {
+              setProduct(found);
+              return;
+            }
+          }
+        } else if (cartItems.length > 0) {
+          const allRes = await fetch("/api/products");
+          if (allRes.ok) {
+            const list: CatalogProduct[] = await allRes.json();
+            const found = list.find((p) => p.id === cartItems[0].productId);
+            if (found) {
+              setProduct(found);
+              setQuantity(cartItems[0].quantity);
+              return;
+            }
+          }
+        }
+        setProduct(null);
+      } catch (err) {
+        console.error("Failed to load checkout product:", err);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void resolveProduct();
+  }, [cartItems]);
 
   const subtotal = product ? product.sellPrice * quantity : 0;
   const total = Math.max(subtotal + deliveryFee - discount, 0);
@@ -90,6 +126,7 @@ function CheckoutForm() {
     const result = await response.json().catch(() => null);
     setOrderNumber(result?.orderNumber ?? "");
     setSubmitted(true);
+    clearCart();
   };
 
   const copyNumber = async () => { await navigator.clipboard.writeText("01615869724"); setCopied(true); window.setTimeout(() => setCopied(false), 1800); };
@@ -138,7 +175,7 @@ function CheckoutForm() {
               <h2 className="flex items-center gap-2 text-lg font-black text-slate-950 dark:text-white"><MapPin size={19} className="text-cyan-600" /> Delivery details</h2>
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
                 <input required name="name" autoComplete="name" placeholder="Full name…" className="field" />
-                <input required name="phone" inputMode="tel" autoComplete="tel" placeholder="Mobile number…" className="field" />
+                <input required name="phone" inputMode="tel" autoComplete="tel" pattern="01[0-9]{9}" title="সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন (যেমন: 01712345678)" placeholder="Mobile number (০১XXXXXXXXX)…" className="field" />
                 <textarea required name="address" autoComplete="street-address" placeholder="Full delivery address…" rows={3} className="field sm:col-span-2" />
                 <select required name="zone" aria-label="Delivery zone" value={deliveryZone} onChange={(event) => handleZoneChange(event.target.value)} className="field">
                   {deliveryOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
@@ -162,8 +199,8 @@ function CheckoutForm() {
                 <p className="mt-3">আমাদের টিম TrxID ম্যানুয়ালি যাচাই করে অর্ডার নিশ্চিত করবে।</p>
               </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                <input required name="bkashSender" inputMode="tel" pattern="01[3-9][0-9]{8}" title="সঠিক ১১ সংখ্যার বিকাশ নম্বর দিন" placeholder="বিকাশ নম্বর (০১XXXXXXXXX)…" className="field" />
-                <input required name="transactionId" minLength={4} placeholder="বিকাশ TrxID…" className="field" />
+                <input required name="bkashSender" inputMode="tel" pattern="01[3-9][0-9]{8}" title="সঠিক ১১ সংখ্যার বিকাশ নম্বর দিন (যেমন: 01712345678)" placeholder="বিকাশ নম্বর (০১XXXXXXXXX)…" className="field" />
+                <input required name="transactionId" minLength={4} pattern="[A-Za-z0-9]+" title="সঠিক বিকাশ TrxID দিন" placeholder="বিকাশ TrxID…" className="field" />
               </div>
             </section>
           </div>

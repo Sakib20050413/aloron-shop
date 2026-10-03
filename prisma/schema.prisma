@@ -21,6 +21,7 @@ enum PaymentStatus {
 enum OrderStatus {
   PENDING
   CONFIRMED
+  PACKAGING
   SHIPPED
   DELIVERED
   CANCELLED
@@ -47,6 +48,7 @@ model Product {
   id            String      @id @default(uuid())
   productCode   String      @unique
   name          String
+  nameEn        String?
   slug          String      @unique
   description   String      @db.Text
   category      String
@@ -57,6 +59,7 @@ model Product {
   videoUrl      String?
   images        String[]
   specs         Json?
+  whatsInTheBox String[]    @default([])
   isActive      Boolean     @default(true)
   isFeatured    Boolean     @default(false)
   orderItems    OrderItem[]
@@ -68,14 +71,14 @@ model Product {
 
 model SiteSettings {
   id              String   @id @default("global")
-  noticeText      String   @default("কুমিল্লাসহ সারাদেশে দ্রুততম হোম ডেলিভারি")
+  noticeText      String   @default("ঢাকা থেকে সারাদেশে দ্রুততম হোম ডেলিভারি")
   heroTitle       String   @default("প্রয়োজনীয় সব স্মার্ট গ্যাজেট ও ইলেকট্রনিক্স")
   heroSubtitle    String   @default("১০০% টেস্টেড গ্যাজেট, মাত্র ২০০ টাকা বিকাশ অগ্রিমে বুকিং।")
   bkashNumber     String   @default("01615869724")
   advanceFee      Decimal  @default(200) @db.Decimal(10, 2)
   contactNumber   String   @default("01615869724")
   whatsappNumber  String   @default("01615869724")
-  address         String   @default("কুমিল্লা, বাংলাদেশ")
+  address         String   @default("ঢাকা, বাংলাদেশ")
   insideDhakaFee  Decimal  @default(70) @db.Decimal(10, 2)
   outsideDhakaFee Decimal  @default(150) @db.Decimal(10, 2)
   updatedAt       DateTime @updatedAt

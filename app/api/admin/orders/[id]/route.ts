@@ -3,7 +3,7 @@ import { z } from "zod";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
-const statusSchema = z.object({ status: z.enum(["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(), trackingNumber: z.string().trim().max(100).optional() }).refine((data) => data.status || data.trackingNumber !== undefined);
+const statusSchema = z.object({ status: z.enum(["PENDING", "CONFIRMED", "PACKAGING", "SHIPPED", "DELIVERED", "CANCELLED"]).optional(), trackingNumber: z.string().trim().max(100).optional() }).refine((data) => data.status || data.trackingNumber !== undefined);
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();

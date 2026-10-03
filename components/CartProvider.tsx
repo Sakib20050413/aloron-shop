@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { CatalogProduct } from "@/lib/catalog";
 import { useSafeLocalStorage } from "@/lib/useSafeLocalStorage";
 import { useToast } from "@/components/ui/Toast";
@@ -54,13 +54,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const { showToast } = useToast();
 
   // Once mounted, scrub any stale/garbage data from localStorage so SSR + CSR agree.
-  useMemo(() => {
-    if (typeof window === "undefined") return;
-    const cleanItems = sanitizeItems(items);
-    const cleanWish = sanitizeWishlist(wishlist);
-    if (JSON.stringify(cleanItems) !== JSON.stringify(items)) setItems(cleanItems);
-    if (JSON.stringify(cleanWish) !== JSON.stringify(wishlist)) setWishlist(cleanWish);
-    setHydrated(true);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const cleanItems = sanitizeItems(items);
+      const cleanWish = sanitizeWishlist(wishlist);
+      if (JSON.stringify(cleanItems) !== JSON.stringify(items)) setItems(cleanItems);
+      if (JSON.stringify(cleanWish) !== JSON.stringify(wishlist)) setWishlist(cleanWish);
+      setHydrated(true);
+    });
+    return () => cancelAnimationFrame(frame);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addItem = useCallback((product: CatalogProduct) => {

@@ -2,11 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { auth } from "@/auth";
+import { auth, OWNER_ADMIN_EMAILS } from "@/auth";
 import { prisma } from "@/lib/prisma";
 
 const emailSchema = z.string().trim().toLowerCase().email().max(254);
-const protectedOwnerEmail = "mdnajmussakib2003@gmail.com";
 
 type ActionResult = { success: true } | { success: false; error: string };
 
@@ -35,7 +34,7 @@ export async function demoteAdmin(userId: string): Promise<ActionResult> {
   if (!parsedId.success) return { success: false, error: "অবৈধ অ্যাডমিন।" };
   const user = await prisma.user.findUnique({ where: { id: userId }, select: { email: true, role: true } });
   if (!user || user.role !== "ADMIN") return { success: false, error: "অ্যাডমিন পাওয়া যায়নি।" };
-  if (user.email.toLowerCase() === protectedOwnerEmail) return { success: false, error: "প্রধান মালিককে ডিমোট করা যাবে না।" };
+  if (user.email && OWNER_ADMIN_EMAILS.has(user.email.toLowerCase())) return { success: false, error: "প্রধান মালিককে ডিমোট করা যাবে না।" };
   await prisma.user.update({ where: { id: userId }, data: { role: "CUSTOMER" } });
   revalidatePath("/admin");
   return { success: true };

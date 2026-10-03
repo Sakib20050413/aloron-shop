@@ -15,7 +15,7 @@ import { MobileDock } from "@/components/MobileDock";
 import { useCart } from "@/components/CartProvider";
 
 type SiteSettingsPreview = { noticeText: string; address: string; contactNumber: string };
-const defaultSettings: SiteSettingsPreview = { noticeText: "কুমিল্লাসহ সারাদেশে দ্রুততম হোম ডেলিভারি", address: "কুমিল্লা, বাংলাদেশ", contactNumber: "01615869724" };
+const defaultSettings: SiteSettingsPreview = { noticeText: "ঢাকা থেকে সারাদেশে দ্রুততম হোম ডেলিভারি", address: "ঢাকা, বাংলাদেশ", contactNumber: "01615869724" };
 let settingsRequest: Promise<SiteSettingsPreview | null> | undefined;
 let productsRequest: Promise<CatalogProduct[]> | undefined;
 
@@ -121,7 +121,7 @@ export function Navbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-1 text-sm font-bold text-stone-700 dark:text-slate-300">
-            <Link href="/shop" className="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-cyan-700 dark:hover:bg-white/10">শপ ও ক্যাটাগরি</Link>
+            <Link href="/products" className="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-cyan-700 dark:hover:bg-white/10">শপ ও ক্যাটাগরি</Link>
             <Link href="/#trending" className="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-cyan-700 dark:hover:bg-white/10">ট্রেন্ডিং গেজেট</Link>
             <Link href="/track" className="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-cyan-700 dark:hover:bg-white/10">অর্ডার ট্র্যাক করুন</Link>
           </nav>
@@ -187,7 +187,7 @@ export function Navbar() {
                 <button onClick={closeMenu} aria-label="মেনু বন্ধ করুন"><X size={24} className="text-white" /></button>
               </div>
               <nav className="space-y-1">
-                <Link onClick={closeMenu} href="/shop" className="block rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:bg-white/10">শপ ও ক্যাটাগরি</Link>
+                <Link onClick={closeMenu} href="/products" className="block rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:bg-white/10">শপ ও ক্যাটাগরি</Link>
                 <Link onClick={closeMenu} href="/#trending" className="block rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:bg-white/10">ট্রেন্ডিং গেজেট</Link>
                 <Link onClick={closeMenu} href="/track" className="block rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:bg-white/10">অর্ডার ট্র্যাক করুন</Link>
                 <a onClick={closeMenu} href="https://wa.me/8801615869724" target="_blank" rel="noreferrer" className="block rounded-xl px-4 py-3.5 text-base font-bold text-emerald-300 transition hover:bg-emerald-500/10">হোয়াটসঅ্যাপ সাপোর্ট</a>

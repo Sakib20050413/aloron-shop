@@ -16,8 +16,7 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
       const href = link.getAttribute("href");
       if (!href) return;
       const url = new URL(href, window.location.href);
-      if (url.origin !== window.location.origin) return;
-      if (url.pathname === pathname) {
+      if (href.startsWith("#") || url.pathname === pathname) {
         setLoading(false);
         if (url.hash) {
           window.requestAnimationFrame(() => document.getElementById(url.hash.slice(1))?.scrollIntoView({ behavior: "smooth", block: "start" }));

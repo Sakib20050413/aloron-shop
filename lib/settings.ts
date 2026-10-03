@@ -1,14 +1,14 @@
 import { prisma } from "@/lib/prisma";
 
 export const defaultSiteSettings = {
-  noticeText: "কুমিল্লাসহ সারাদেশে দ্রুততম হোম ডেলিভারি",
+  noticeText: "ঢাকা থেকে সারাদেশে দ্রুততম হোম ডেলিভারি",
   heroTitle: "প্রয়োজনীয় সব স্মার্ট গ্যাজেট ও ইলেকট্রনিক্স",
   heroSubtitle: "১০০% টেস্টেড গ্যাজেট, মাত্র ২০০ টাকা বিকাশ অগ্রিমে বুকিং।",
   bkashNumber: "01615869724",
   advanceFee: 200,
   contactNumber: "01615869724",
   whatsappNumber: "01615869724",
-  address: "কুমিল্লা, বাংলাদেশ",
+  address: "ঢাকা, বাংলাদেশ",
   insideDhakaFee: 70,
   outsideDhakaFee: 150,
 };

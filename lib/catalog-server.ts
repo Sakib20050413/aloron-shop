@@ -22,7 +22,9 @@ function mapDbProduct(product: Awaited<ReturnType<typeof prisma.product.findFirs
     specs: Object.fromEntries(Object.entries((product!.specs as Record<string, unknown> | null) ?? {}).map(([key, value]) => [key, String(value)])),
     videoUrl: (product as Record<string, unknown>).videoUrl as string | undefined ?? undefined,
     faqs: ((product as Record<string, unknown>).faqs as [string, string][] | null) ?? undefined,
-    boxContents: ((product as Record<string, unknown>).boxContents as string[] | null) ?? undefined,
+    boxContents: Array.isArray((product as Record<string, unknown>).whatsInTheBox) && ((product as Record<string, unknown>).whatsInTheBox as string[]).length > 0
+      ? ((product as Record<string, unknown>).whatsInTheBox as string[])
+      : (((product as Record<string, unknown>).boxContents as string[] | null) ?? undefined),
   };
 }
 

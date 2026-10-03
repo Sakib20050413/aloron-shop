@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, MessageCircle, Minus, Plus, ShieldCheck, ShoppingBag, Truck, Zap, RotateCcw } from "lucide-react";
 import type { CatalogProduct } from "@/lib/catalog";
 import { ProductGallery } from "@/components/shop/ProductGallery";
-import { ImageOrIcon } from "@/components/shop/ImageOrIcon";
 
 type Props = {
   product: CatalogProduct;
