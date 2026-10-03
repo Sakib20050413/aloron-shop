@@ -12,9 +12,11 @@ export async function createCoupon(formData: FormData) {
   return { success: true };
 }
 
-export async function toggleCoupon(_id: string, _isActive: boolean) {
+export async function toggleCoupon(id: string, isActive: boolean) {
   const session = await auth();
   if (session?.user?.role !== "ADMIN") return { success: false, error: "FORBIDDEN" };
+  void id;
+  void isActive;
   revalidatePath("/admin");
   return { success: true };
 }

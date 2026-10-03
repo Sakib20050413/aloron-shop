@@ -189,7 +189,7 @@ function CheckoutForm() {
                 <div className="flex flex-wrap items-center gap-4">
                   <Image src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=01615869724" width={140} height={140} sizes="140px" alt="bKash payment QR code for 01615869724" className="rounded-xl bg-white p-2" unoptimized />
                   <div className="min-w-0 flex-1">
-                    <p className="font-black text-[#e2136e]">অর্ডার কনফার্ম করার জন্য ২০০ টাকা advance Send Money করুন: ০১৬৫৮৬৯৭২৪ (Personal)। ট্রানজেকশন যাচাইয়ের জন্য নিচের তথ্য দিন।</p>
+                    <p className="font-black text-[#e2136e]">অর্ডার কনফার্ম করার জন্য ২০০ টাকা advance Send Money করুন: ০১৬১৫৮৬৯৭২৪ (Personal)। ট্রানজেকশন যাচাইয়ের জন্য নিচের তথ্য দিন।</p>
                     <div className="mt-3 flex flex-wrap items-center gap-2">
                       <span className="rounded-lg bg-white px-3 py-2 font-black tracking-wide text-slate-900">01615869724</span>
                       <button type="button" title={copied ? "Number copied" : "Copy bKash number"} onClick={copyNumber} className="inline-flex items-center gap-1.5 rounded-lg bg-[#e2136e] px-3 py-2 text-xs font-bold text-white transition hover:opacity-90">{copied ? <Check size={14} /> : <Copy size={14} />} {copied ? "Copied" : "Copy Number"}</button>

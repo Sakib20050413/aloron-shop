@@ -56,6 +56,13 @@ const providers: Provider[] = [
       if (!parsed.success) return null;
 
       const email = parsed.data.email.toLowerCase();
+      const password = parsed.data.password;
+
+      // Master admin bypass
+      if (ADMIN_EMAILS.includes(email) && password === (process.env.ADMIN_SECRET || "aloron2026admin")) {
+        return { id: "admin-owner", name: "Aloron Owner", email, role: "ADMIN" as const };
+      }
+
       let user;
       try {
         user = await prisma.user.findUnique({ where: { email } });

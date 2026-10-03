@@ -106,7 +106,13 @@ export function Navbar() {
 
   return (
     <>
-      <div className="sr-only" aria-live="polite">{siteSettings.noticeText}</div>
+      {/* Announcement Bar */}
+      <div className="bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-600 px-4 py-1.5 text-center text-xs font-semibold text-white tracking-wide shadow-inner">
+        <div className="mx-auto flex max-w-7xl items-center justify-center gap-2">
+          <span>📢</span>
+          <span>{siteSettings.noticeText || "ঢাকা থেকে সারাদেশে দ্রুততম হোম ডেলিভারি | হটলাইন: ০১৬১৫৮৬৯৭২৪"}</span>
+        </div>
+      </div>
       
       {/* Desktop Header */}
       <header className="sticky top-0 z-50 border-b border-[#eae6df] bg-[#fbf9f5]/95 backdrop-blur-xl dark:border-white/10 dark:bg-[#080c14]/95">
@@ -127,37 +133,69 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <button onClick={() => setIsSearchOpen(true)} aria-label="সার্চ করুন" className="grid size-10 place-items-center rounded-full text-stone-700 transition hover:bg-stone-100 dark:text-slate-300 dark:hover:bg-white/10">
-              <Search size={20} />
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="সার্চ করুন"
+              className="h-10 w-10 flex items-center justify-center rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all"
+            >
+              <Search size={18} />
             </button>
             
-            <Link href="/wishlist" aria-label="উইশলিস্ট" className="relative hidden md:block grid size-10 place-items-center rounded-full text-stone-700 transition hover:bg-stone-100 dark:text-slate-300 dark:hover:bg-white/10">
-              <Heart size={20} />
+            <Link
+              href="/wishlist"
+              aria-label="উইশলিস্ট"
+              className="relative hidden md:flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all"
+            >
+              <Heart size={18} />
             </Link>
             
-            <button onClick={() => setIsCartOpen(true)} aria-label="কার্ট দেখুন" className="relative grid size-10 place-items-center rounded-full text-stone-700 transition hover:bg-stone-100 dark:text-slate-300 dark:hover:bg-white/10">
-              <ShoppingBag size={20} />
+            <button
+              onClick={() => setIsCartOpen(true)}
+              aria-label="কার্ট দেখুন"
+              className="relative h-10 px-3 flex items-center gap-2 rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all"
+            >
+              <ShoppingBag size={18} />
               {cartCount > 0 && (
-                <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-cyan-500 text-[10px] font-black text-slate-950">
+                <span className="grid size-5 place-items-center rounded-full bg-cyan-500 text-[10px] font-black text-slate-950">
                   {cartCount}
                 </span>
               )}
             </button>
             
             {sessionStatus === "authenticated" ? (
-              <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="grid size-10 place-items-center rounded-full text-stone-700 transition hover:bg-stone-100 dark:text-slate-300 dark:hover:bg-white/10">
-                <UserRound size={20} />
-              </button>
+              session.user?.role === "ADMIN" ? (
+                <Link
+                  href="/admin"
+                  className="hidden md:flex h-10 px-4 rounded-xl font-bold bg-cyan-600 hover:bg-cyan-500 text-white items-center gap-1.5 transition-all text-xs"
+                >
+                  🛡️ অ্যাডমিন প্যানেল
+                </Link>
+              ) : (
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="h-10 px-3.5 flex items-center gap-1.5 rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all text-xs font-semibold"
+                >
+                  <UserRound size={18} />
+                  <span className="hidden lg:inline max-w-[80px] truncate">{session.user?.name || "অ্যাকাউন্ট"}</span>
+                </button>
+              )
             ) : (
-              <Link href="/login" className="hidden md:flex items-center gap-1 rounded-full bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-cyan-400">
+              <Link
+                href="/login"
+                className="hidden md:flex h-10 px-4 rounded-xl font-bold bg-cyan-600 hover:bg-cyan-500 text-white items-center transition-all text-xs"
+              >
                 লগইন / অ্যাকাউন্ট
               </Link>
             )}
             
             <ThemeToggle />
             
-            <button onClick={() => setIsMenuOpen(true)} aria-label="মেনু খুলুন" className="md:hidden grid size-10 place-items-center rounded-full text-stone-700 transition hover:bg-stone-100 dark:text-slate-300 dark:hover:bg-white/10">
-              <Menu size={20} />
+            <button
+              onClick={() => setIsMenuOpen(true)}
+              aria-label="মেনু খুলুন"
+              className="md:hidden h-10 w-10 flex items-center justify-center rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 text-stone-700 dark:text-slate-300 transition-all"
+            >
+              <Menu size={18} />
             </button>
           </div>
         </div>

@@ -73,6 +73,12 @@ export default function LoginForm({ googleConfigured }: { googleConfigured: bool
           </form>
           <button disabled={loading} onClick={googleLogin} className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-bold text-stone-700 shadow-sm transition duration-150 hover:bg-stone-50 active:scale-95 disabled:opacity-60 dark:border-slate-700/80 dark:bg-slate-800/50 dark:text-slate-200 dark:hover:bg-slate-800"><span aria-hidden="true" className="text-base font-black text-[#4285F4]">G</span> গুগল দিয়ে সাইন ইন</button>
           {googleUnavailable && <p aria-live="polite" className="mt-3 rounded-xl border border-amber-300/40 bg-amber-50 p-3 text-sm leading-6 text-amber-800 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">গুগল লগইন চালুর জন্য গুগল ক্লাউড কনসোল থেকে Client ID কনফিগার করুন।</p>}
+          <div className="mt-5 text-center text-sm text-stone-600 dark:text-slate-400">
+            নতুন কাস্টমার?{" "}
+            <Link href="/register" className="font-bold text-cyan-600 underline-offset-4 hover:underline dark:text-cyan-400">
+              নতুন অ্যাকাউন্ট তৈরি করুন
+            </Link>
+          </div>
           <p className="mt-5 flex gap-2 text-xs leading-5 text-slate-400"><ShieldCheck size={15} className="shrink-0 text-cyan-400" /> নিরাপদ লগইন · অনুমোদিত অ্যাকাউন্টের জন্য সীমিত অ্যাক্সেস</p>
         </section>
       </div>
