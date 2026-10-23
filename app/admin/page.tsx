@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { BarChart3, CircleDollarSign, Package, Truck } from "lucide-react";
+import { BarChart3, CircleDollarSign, Package, ShieldCheck, Truck, Users } from "lucide-react";
 import { auth, OWNER_ADMIN_EMAILS } from "@/auth";
 import { Navbar } from "@/components/Navbar";
 import { prisma } from "@/lib/prisma";
@@ -68,10 +68,10 @@ export default async function AdminPage() {
 
   const metrics = [
     ["মোট বিক্রয়", `৳${sales.toLocaleString("en-BD")}`, CircleDollarSign],
-    ["অর্ডার", String(orders.length), Package],
-    ["নিট লাভ", `৳${(sales - costs).toLocaleString("en-BD")}`, BarChart3],
-    ["প্যাকেজিং / ডিসপ্যাচ", String(orders.filter((order) => order.status === "PACKAGING" || order.status === "CONFIRMED").length), Truck],
-    ["মোট গ্রাহক সংখ্যা", String(totalCustomerCount), Package],
+    ["অর্ডার সংখ্যা", String(orders.length), Package],
+    ["আনুমানিক নিট লাভ", `৳${(sales - costs).toLocaleString("en-BD")}`, BarChart3],
+    ["প্যাকেজিং ও ডিসপ্যাচ", String(orders.filter((order) => order.status === "PACKAGING" || order.status === "CONFIRMED").length), Truck],
+    ["মোট গ্রাহক সংখ্যা", String(totalCustomerCount), Users],
   ] as const;
 
   const adminProducts = products.map((product) => ({
@@ -132,26 +132,37 @@ export default async function AdminPage() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-7xl px-5 py-12 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-neutral-800">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[.2em] text-cyan-600">Restricted portal</p>
-            <h1 className="mt-2 text-4xl font-black text-slate-950 dark:text-white">Store Management System</h1>
+            <div className="font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              SECURE ENGINE // STORE MANAGEMENT
+            </div>
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl dark:text-white">
+              অ্যাডমিন পোর্টাল ও অপারেশনাল হাব
+            </h1>
           </div>
           <div className="flex items-center gap-3">
-            <span className="rounded-full bg-emerald-100 px-3 py-1.5 text-xs font-bold text-emerald-700">Admin access</span>
+            <span className="inline-flex items-center gap-1.5 rounded-md border border-neutral-200 bg-neutral-100 px-2.5 py-1 font-mono text-xs font-semibold text-neutral-800 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
+              <ShieldCheck size={13} className="text-emerald-500" />
+              <span>AUTHORIZED ADMIN</span>
+            </span>
             <AdminLogoutButton />
           </div>
         </div>
-        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+
+        <div className="mt-6 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-5">
           {metrics.map(([label, value, Icon]) => (
-            <div key={label} className="rounded-2xl border border-slate-200 p-5 dark:border-white/10">
-              <Icon className="text-cyan-600" size={22} />
-              <p className="mt-5 text-sm text-slate-500">{label}</p>
-              <p className="mt-1 text-2xl font-black">{value}</p>
+            <div key={label} className="rounded-xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/60">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs text-neutral-500 dark:text-neutral-400">{label}</span>
+                <Icon className="text-neutral-600 dark:text-neutral-400" size={17} />
+              </div>
+              <p className="mt-3 font-mono text-xl font-bold text-neutral-950 dark:text-white sm:text-2xl">{value}</p>
             </div>
           ))}
         </div>
+
         <AdminPortal
           products={adminProducts}
           orders={adminOrders}
