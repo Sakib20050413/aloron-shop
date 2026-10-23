@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Check, Copy, CreditCard, MapPin, ShieldCheck } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import type { CatalogProduct } from "@/lib/catalog";
 import { ImageOrIcon } from "@/components/shop/ImageOrIcon";
 import { useCart } from "@/components/CartProvider";
@@ -245,6 +246,7 @@ export default function CheckoutPage() {
           <CheckoutForm />
         </Suspense>
       </main>
+      <Footer />
     </>
   );
 }

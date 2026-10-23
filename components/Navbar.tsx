@@ -51,7 +51,8 @@ export function Navbar() {
   const productsRef = useRef(products);
   
   // Connect to unified cart provider
-  const { items: cartItems, addItem, changeQuantity: updateCartQty, count: cartCount } = useCart();
+  const { items: cartItems, addItem, changeQuantity: updateCartQty, count: cartCount, wishlist } = useCart();
+  const wishlistCount = Object.keys(wishlist || {}).length;
 
   useEffect(() => { productsRef.current = products; }, [products]);
   useEffect(() => {
@@ -147,6 +148,11 @@ export function Navbar() {
               className="relative hidden md:flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all"
             >
               <Heart size={18} />
+              {wishlistCount > 0 && (
+                <span className="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-rose-500 text-[10px] font-black text-white shadow-sm">
+                  {wishlistCount}
+                </span>
+              )}
             </Link>
             
             <button

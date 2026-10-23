@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Navbar } from "@/components/Navbar";
+import { Footer } from "@/components/Footer";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { useCart } from "@/components/CartProvider";
 import type { CatalogProduct } from "@/lib/catalog";
@@ -68,6 +69,7 @@ export default function WishlistPage() {
           </div>
         )}
       </main>
+      <Footer />
     </>
   );
 }

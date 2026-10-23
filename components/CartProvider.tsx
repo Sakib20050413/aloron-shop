@@ -12,7 +12,7 @@ type CartContextValue = {
   items: CartItem[];
   wishlist: WishlistState;
   count: number;
-  addItem: (product: CatalogProduct) => void;
+  addItem: (product: CatalogProduct, quantity?: number) => void;
   removeItem: (productId: string) => void;
   changeQuantity: (productId: string, delta: number) => void;
   clearCart: () => void;
@@ -65,13 +65,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return () => cancelAnimationFrame(frame);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const addItem = useCallback((product: CatalogProduct) => {
+  const addItem = useCallback((product: CatalogProduct, quantity: number = 1) => {
     setItems((prev) => {
+      const qty = Math.max(1, quantity);
       const existing = prev.find((line) => line.productId === product.id);
-      if (existing) return prev.map((line) => line.productId === product.id ? { ...line, quantity: line.quantity + 1 } : line);
-      return [...prev, { productId: product.id, quantity: 1 }];
+      if (existing) return prev.map((line) => line.productId === product.id ? { ...line, quantity: line.quantity + qty } : line);
+      return [...prev, { productId: product.id, quantity: qty }];
     });
-    showToast({ type: "success", message: "কার্টে যোগ করা হয়েছে", action: { label: "কার্ট দেখুন", href: "/cart" } });
+    showToast({ type: "success", message: `${product.name} কার্টে যোগ করা হয়েছে`, action: { label: "কার্ট দেখুন", href: "/checkout" } });
   }, [setItems, showToast]);
 
   const removeItem = useCallback((productId: string) => {
