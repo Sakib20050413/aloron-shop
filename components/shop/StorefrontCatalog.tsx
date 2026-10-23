@@ -20,7 +20,7 @@ export function StorefrontCatalog({ products }: { products: CatalogProduct[] }) 
       <CategoryBar active={category} onChange={setCategory} />
 
       <section id="trending" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
-        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-neutral-800">
+        <div className="flex flex-wrap items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-white/[0.08]">
           <div>
             <div className="font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
               FEATURED INVENTORY
@@ -44,7 +44,7 @@ export function StorefrontCatalog({ products }: { products: CatalogProduct[] }) 
         </div>
 
         {filtered.length === 0 && (
-          <div className="my-16 rounded-2xl border border-dashed border-neutral-300 py-16 text-center dark:border-neutral-800">
+          <div className="my-16 rounded-2xl border border-dashed border-neutral-300 dark:border-white/10 py-16 text-center">
             <p className="font-mono text-xs uppercase tracking-wider text-neutral-500">
               এই ক্যাটাগরিতে কোনো পণ্য পাওয়া যায়নি।
             </p>

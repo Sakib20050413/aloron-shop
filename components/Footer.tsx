@@ -10,23 +10,24 @@ export function Footer() {
 
   return (
     <>
-      {/* Floating WhatsApp Quick Contact Button */}
+      {/* Floating WhatsApp Quick Contact Button with Glow Pulse */}
       <a
         href="https://wa.me/8801615869724"
         target="_blank"
         rel="noreferrer"
         aria-label="Chat with Aloron on WhatsApp"
-        className="fixed bottom-6 right-5 z-50 flex items-center gap-2 rounded-full border border-neutral-800 bg-[#25d366] px-4 py-2.5 text-white shadow-xl shadow-black/20 transition-all duration-200 hover:scale-105 active:scale-95"
+        className="group fixed bottom-6 right-5 z-50 flex items-center gap-2.5 rounded-full border border-emerald-400/40 bg-[#25d366] px-4 py-2.5 text-white shadow-[0_8px_25px_rgba(37,211,102,0.4)] transition-all duration-300 hover:scale-105 active:scale-95 backdrop-blur-md"
       >
         <span className="relative flex size-4 items-center justify-center">
-          <MessageCircle size={18} fill="currentColor" />
+          <span className="absolute -inset-1 animate-ping rounded-full bg-white opacity-35" />
+          <MessageCircle size={18} fill="currentColor" className="relative z-10" />
         </span>
         <span className="hidden font-mono text-xs font-bold tracking-tight sm:inline">
           হোয়াটসঅ্যাপ সাপোর্ট
         </span>
       </a>
 
-      <footer className="border-t border-neutral-200 bg-neutral-950 px-4 py-14 text-neutral-400 sm:px-6 lg:px-8 dark:border-neutral-800">
+      <footer className="border-t border-neutral-200/80 bg-neutral-950 px-4 py-16 text-neutral-400 sm:px-6 lg:px-8 dark:border-white/[0.08]">
         <div className="mx-auto grid max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand Column */}
           <div>
@@ -54,7 +55,7 @@ export function Footer() {
             <p className="mt-4 text-xs leading-relaxed text-neutral-400">
               &ldquo;Better Choice, Brighter You&rdquo; — প্রয়োজনীয় সব আধুনিক ও প্রিমিয়াম স্মার্ট গ্যাজেট, টেস্টেড কোয়ালিটি ও দ্রুততম সেন্ট্রাল হোম ডেলিভারি।
             </p>
-            <div className="mt-5 inline-flex items-center gap-1.5 rounded-md border border-neutral-800 bg-neutral-900 px-2.5 py-1 font-mono text-[11px] text-neutral-300">
+            <div className="mt-5 inline-flex items-center gap-1.5 rounded-md border border-neutral-800 bg-neutral-900/90 px-2.5 py-1 font-mono text-[11px] text-neutral-300">
               <ShieldCheck size={13} className="text-emerald-500" />
               <span>১০০% অথেনটিক কোয়ালিটি নিশ্চয়তা</span>
             </div>

@@ -34,7 +34,7 @@ export default async function Home() {
   return (
     <>
       <Navbar />
-      <main>
+      <main className="relative z-10">
         {/* 60fps GPU Hero Slider */}
         <HeroBanner cmsSlides={cmsSlides} />
 
@@ -46,7 +46,7 @@ export default async function Home() {
 
         {/* Category Explorer Grid */}
         <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8 lg:pb-24">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-neutral-800">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-white/[0.08]">
             <div>
               <div className="font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
                 DISCOVER BY HARDWARE CATEGORY
@@ -57,7 +57,7 @@ export default async function Home() {
             </div>
             <Link
               href="/products"
-              className="group inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-900 transition-colors hover:text-neutral-600 dark:text-neutral-100 dark:hover:text-neutral-400"
+              className="group inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-900 transition-colors hover:text-indigo-600 dark:text-neutral-100 dark:hover:text-indigo-400"
             >
               <span>সব কালেকশন এক্সপ্লোর করুন</span>
               <ArrowUpRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -78,10 +78,10 @@ export default async function Home() {
                 <Link
                   key={name}
                   href={`/products?category=${encodeURIComponent(name)}`}
-                  className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-neutral-200/90 bg-white p-5 shadow-sm transition-all duration-300 hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900/60 dark:hover:border-neutral-700"
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/90 dark:bg-[#0c0f18]/80 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:border-neutral-400 dark:hover:border-indigo-500/40 backdrop-blur-md"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="grid size-10 place-items-center rounded-lg border border-neutral-200 bg-neutral-100 text-neutral-900 transition-colors group-hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100">
+                    <div className="grid size-11 place-items-center rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-100 dark:bg-white/5 text-neutral-900 transition-colors group-hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 shadow-inner">
                       <Icon size={18} aria-hidden="true" />
                     </div>
                     <span className="font-mono text-[10px] font-semibold text-neutral-500 dark:text-neutral-400">
@@ -93,7 +93,7 @@ export default async function Home() {
                     <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                       {meta.sku}
                     </span>
-                    <p className="mt-1 text-base font-bold text-neutral-950 transition-colors group-hover:text-neutral-700 dark:text-white dark:group-hover:text-neutral-200">
+                    <p className="mt-1 text-base font-bold text-neutral-950 transition-colors group-hover:text-indigo-600 dark:text-white dark:group-hover:text-indigo-400">
                       {meta.labelBn}
                     </p>
                     <p className="mt-3 inline-flex items-center gap-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-600 transition-colors group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-white">

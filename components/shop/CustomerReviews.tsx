@@ -32,10 +32,10 @@ const reviews = [
 
 export function CustomerReviews() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20" aria-labelledby="reviews-heading">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-neutral-800">
+    <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24" aria-labelledby="reviews-heading">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-white/[0.08]">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-100 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-neutral-800 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 dark:border-white/10 bg-neutral-100 dark:bg-white/5 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-neutral-800 dark:text-neutral-200 backdrop-blur-md">
             <ShieldCheck size={13} className="text-emerald-500" />
             <span>ভেরিফাইড কাস্টমার এক্সপেরিয়েন্স</span>
           </div>
@@ -64,7 +64,8 @@ export function CustomerReviews() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.08, duration: 0.35 }}
-            className="flex flex-col justify-between rounded-xl border border-neutral-200/90 bg-white p-6 shadow-sm transition-all duration-200 hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900/60 dark:hover:border-neutral-700"
+            whileHover={{ y: -4 }}
+            className="flex flex-col justify-between rounded-2xl border border-neutral-200/90 bg-white/90 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:border-neutral-400 dark:border-white/[0.08] dark:bg-[#0c0f18]/80 dark:hover:border-indigo-500/40 backdrop-blur-md"
           >
             <div>
               <div className="flex items-center justify-between gap-2">
@@ -83,7 +84,7 @@ export function CustomerReviews() {
               </p>
             </div>
 
-            <div className="mt-6 flex items-center justify-between border-t border-neutral-100 pt-4 dark:border-neutral-800">
+            <div className="mt-6 flex items-center justify-between border-t border-neutral-100 dark:border-white/[0.06] pt-4">
               <div>
                 <p className="flex items-center gap-1.5 text-xs font-bold text-neutral-900 sm:text-sm dark:text-white">
                   {review.name}
@@ -91,7 +92,7 @@ export function CustomerReviews() {
                 </p>
                 <p className="font-mono text-[11px] text-neutral-500 dark:text-neutral-400">{review.location}</p>
               </div>
-              <span className="rounded-md border border-neutral-200 bg-neutral-50 px-2 py-0.5 font-mono text-[10px] font-semibold text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+              <span className="rounded-md border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-white/5 px-2 py-0.5 font-mono text-[10px] font-semibold text-neutral-700 dark:text-neutral-300">
                 {review.product}
               </span>
             </div>

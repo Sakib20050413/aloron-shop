@@ -22,7 +22,7 @@ export function MobileDock({ cartCount, isAdmin }: { cartCount: number; isAdmin:
   return (
     <nav
       aria-label="মোবাইল নেভিগেশন"
-      className="fixed inset-x-0 bottom-0 z-[55] border-t border-neutral-200/90 bg-white/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] backdrop-blur-xl md:hidden dark:border-neutral-800 dark:bg-neutral-950/95"
+      className="fixed inset-x-0 bottom-0 z-[55] border-t border-neutral-200/80 bg-white/85 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-4px_25px_rgba(0,0,0,0.08)] backdrop-blur-2xl md:hidden dark:border-white/[0.08] dark:bg-[#06080d]/85"
     >
       <div className="mx-auto grid max-w-md grid-cols-5 gap-1">
         <Link

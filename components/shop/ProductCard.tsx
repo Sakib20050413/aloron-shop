@@ -36,9 +36,9 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
 
   return (
     <motion.article
-      whileHover={{ y: -5 }}
+      whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 350, damping: 25 }}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800/80 bg-white dark:bg-[#11141b] shadow-sm hover:shadow-xl transition-all duration-300 hover:border-neutral-400 dark:hover:border-neutral-700"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/90 dark:bg-[#0c0f17]/90 shadow-sm hover:shadow-2xl transition-all duration-300 hover:border-neutral-400 dark:hover:border-indigo-500/40 backdrop-blur-md"
     >
       {/* Clickable Overlay Link */}
       <Link
@@ -47,32 +47,35 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         className="absolute inset-0 z-0 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 dark:focus-visible:ring-white"
       />
 
-      {/* Product Visual Studio Frame */}
-      <div className="relative flex aspect-[1/1] items-center justify-center overflow-hidden bg-neutral-50 dark:bg-[#0c0e14] p-5">
+      {/* Product Visual Studio Frame with Ambient Pedestal */}
+      <div className="relative flex aspect-[1/1] items-center justify-center overflow-hidden bg-gradient-to-b from-neutral-50 to-neutral-100/60 dark:from-[#080a10] dark:to-[#0f131d] p-5">
+        {/* Ambient Pedestal Glow on Hover */}
+        <div className="absolute inset-x-8 bottom-4 h-24 rounded-full bg-indigo-500/0 dark:bg-indigo-500/0 blur-2xl transition-all duration-500 group-hover:bg-indigo-500/15 dark:group-hover:bg-indigo-500/25 pointer-events-none" />
+
         <div className="relative h-full w-full flex items-center justify-center transition-transform duration-500 ease-out group-hover:scale-105">
           <ImageOrIcon
             src={product.images[0] ?? product.icon}
             alt={product.name}
             sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 280px"
-            className="size-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_12px_25px_rgba(0,0,0,0.5)]"
+            className="size-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_12px_25px_rgba(0,0,0,0.6)]"
           />
         </div>
 
         {/* Minimal Category Tag */}
-        <span className="absolute left-3 top-3 rounded-md bg-white/90 dark:bg-neutral-900/90 border border-neutral-200 dark:border-neutral-800 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.15em] text-neutral-600 dark:text-neutral-400 backdrop-blur-sm">
+        <span className="absolute left-3 top-3 rounded-md bg-white/95 dark:bg-neutral-900/95 border border-neutral-200/80 dark:border-neutral-800 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.15em] text-neutral-600 dark:text-neutral-400 backdrop-blur-md shadow-xs">
           {product.category}
         </span>
 
         {/* Dynamic Discount Tag */}
         {discountPercent > 0 && (
-          <span className="absolute bottom-3 left-3 rounded-md bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-2 py-0.5 text-[10px] font-black tracking-tight shadow-sm">
+          <span className="absolute bottom-3 left-3 rounded-md bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-2 py-0.5 text-[10px] font-black tracking-tight shadow-md">
             -{discountPercent}%
           </span>
         )}
 
         {/* Stock Alert Badge */}
         {product.stock > 0 && product.stock <= 15 ? (
-          <span className="absolute bottom-3 right-3 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 px-2 py-0.5 text-[9px] font-bold">
+          <span className="absolute bottom-3 right-3 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 px-2 py-0.5 text-[9px] font-bold backdrop-blur-sm">
             সীমিত স্টক
           </span>
         ) : null}
@@ -86,10 +89,10 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
             event.preventDefault();
             toggleWishlist(product.id);
           }}
-          className={`absolute right-3 top-3 z-10 grid size-8 place-items-center rounded-lg border transition-all duration-200 active:scale-95 ${
+          className={`absolute right-3 top-3 z-10 grid size-8 place-items-center rounded-xl border backdrop-blur-md transition-all duration-200 active:scale-90 ${
             isWishlisted
-              ? "border-rose-500/40 bg-rose-50 dark:bg-rose-950/40 text-rose-500"
-              : "border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 text-neutral-500 hover:text-rose-500"
+              ? "border-rose-500/40 bg-rose-50/90 dark:bg-rose-950/60 text-rose-500 shadow-sm"
+              : "border-neutral-200/80 dark:border-white/10 bg-white/90 dark:bg-neutral-900/80 text-neutral-500 hover:text-rose-500 hover:border-rose-300"
           }`}
         >
           <Heart size={15} className={isWishlisted ? "fill-rose-500 text-rose-500" : ""} />
@@ -97,7 +100,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
       </div>
 
       {/* Product Content & Pricing */}
-      <div className="relative z-10 flex flex-1 flex-col justify-between p-4">
+      <div className="relative z-10 flex flex-1 flex-col justify-between p-4 sm:p-5">
         <div>
           <div className="flex items-center justify-between gap-2 text-[10px] text-neutral-400 font-mono uppercase tracking-wider">
             <span>{product.productCode}</span>
@@ -106,7 +109,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
             </span>
           </div>
 
-          <h3 className="mt-2 line-clamp-2 text-sm sm:text-base font-bold text-neutral-900 dark:text-white leading-snug group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">
+          <h3 className="mt-2 line-clamp-2 text-sm sm:text-base font-bold text-neutral-950 dark:text-white leading-snug group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
             {product.name}
           </h3>
 
@@ -129,7 +132,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-4 pt-3 border-t border-neutral-100 dark:border-neutral-800/80 space-y-2">
+        <div className="mt-4 pt-3 border-t border-neutral-100 dark:border-white/[0.06] space-y-2">
           <div className="grid grid-cols-[1fr_auto] gap-2">
             <button
               type="button"
@@ -146,7 +149,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
               rel="noreferrer"
               aria-label={`Order ${product.name} on WhatsApp`}
               onClick={(event) => event.stopPropagation()}
-              className="flex size-10 items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-emerald-600 dark:text-emerald-400 transition-all duration-200 hover:bg-emerald-500 hover:text-white active:scale-[0.98]"
+              className="flex size-10 items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/80 text-emerald-600 dark:text-emerald-400 transition-all duration-200 hover:bg-emerald-500 hover:text-white active:scale-[0.98]"
               title="হোয়াটসঅ্যাপে অর্ডার করুন"
             >
               <MessageCircle size={16} />
@@ -156,7 +159,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
           <button
             type="button"
             onClick={handleAddToCart}
-            className="w-full flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-transparent py-1.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300 transition-all duration-200 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-900 active:scale-[0.98]"
+            className="w-full flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-neutral-200 dark:border-white/10 bg-transparent py-1.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300 transition-all duration-200 hover:border-neutral-400 dark:hover:border-neutral-500 hover:bg-neutral-50 dark:hover:bg-white/5 active:scale-[0.98]"
           >
             <ShoppingBag size={13} />
             কার্টে যোগ করুন

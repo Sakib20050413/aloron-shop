@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
+  --background: #f8fafc;
   --foreground: #09090b;
 }
 
@@ -24,7 +24,7 @@ body {
 }
 
 .dark body {
-  --background: #09090b;
+  --background: #06080d;
   --foreground: #fafafa;
 }
 
@@ -38,6 +38,57 @@ html {
 
 * {
   border-color: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+/* Tactile Glass & Hardware Styling */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(228, 228, 231, 0.8);
+}
+
+.dark .glass-panel {
+  background: rgba(12, 15, 23, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glow-card {
+  position: relative;
+  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glow-card:hover {
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.08);
+}
+
+.dark .glow-card:hover {
+  box-shadow: 0 12px 35px -10px rgba(99, 102, 241, 0.15);
+}
+
+/* Custom Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.4);
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(113, 113, 122, 0.4);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 113, 122, 0.7);
 }
 
 /* World-Class Form Field Styling */

@@ -50,9 +50,9 @@ const tiles = [
 export function BentoGrid() {
   return (
     <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8 lg:pb-24" aria-labelledby="bento-title">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-neutral-800">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-white/[0.08]">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 bg-neutral-100 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-neutral-800 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 dark:border-white/10 bg-neutral-100 dark:bg-white/5 px-3 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-neutral-800 dark:text-neutral-200 backdrop-blur-md">
             <Sparkles size={12} className="text-amber-500" />
             <span>আলোড়ন এক্সক্লুসিভ ইঞ্জিনিয়ারিং</span>
           </div>
@@ -65,7 +65,7 @@ export function BentoGrid() {
         </div>
         <Link
           href="/products"
-          className="group inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-900 transition-colors hover:text-neutral-600 dark:text-neutral-100 dark:hover:text-neutral-400"
+          className="group inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-900 transition-colors hover:text-indigo-600 dark:text-neutral-100 dark:hover:text-indigo-400"
         >
           <span>সব পণ্য এক্সপ্লোর করুন</span>
           <ArrowUpRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -82,14 +82,17 @@ export function BentoGrid() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: index * 0.06, duration: 0.4 }}
-              whileHover={{ y: -3 }}
-              className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/90 bg-white p-6 shadow-sm transition-all duration-300 hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900/60 dark:hover:border-neutral-700 ${tile.className}`}
+              whileHover={{ y: -4 }}
+              className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/90 dark:border-white/[0.08] bg-white/90 dark:bg-[#0c0f18]/80 p-6 shadow-sm hover:shadow-2xl transition-all duration-300 hover:border-neutral-400 dark:hover:border-indigo-500/40 backdrop-blur-md ${tile.className}`}
             >
+              {/* Subtle Ambient Hover Glow */}
+              <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-indigo-500/0 via-transparent to-purple-500/0 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-20 transition-opacity duration-500 pointer-events-none" />
+
               <Link href={tile.href} className="absolute inset-0 z-20" aria-label={`View ${tile.title}`} />
               
               <div className="relative z-10 flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="grid size-10 place-items-center rounded-xl border border-neutral-200 bg-neutral-100 text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100">
+                  <div className="grid size-10 place-items-center rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-100 dark:bg-white/5 text-neutral-900 dark:text-neutral-100 shadow-inner">
                     <Icon size={18} />
                   </div>
                   <div>
@@ -101,13 +104,13 @@ export function BentoGrid() {
                     </p>
                   </div>
                 </div>
-                <span className="shrink-0 rounded-full border border-neutral-200 bg-neutral-50 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                <span className="shrink-0 rounded-full border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-white/5 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
                   {tile.tag}
                 </span>
               </div>
 
               <div className="relative z-10 my-auto pt-4">
-                <h3 className="text-base font-bold text-neutral-950 transition-colors group-hover:text-neutral-700 sm:text-lg dark:text-white dark:group-hover:text-neutral-200">
+                <h3 className="text-base font-bold text-neutral-950 transition-colors group-hover:text-indigo-600 sm:text-lg dark:text-white dark:group-hover:text-indigo-400">
                   {tile.title}
                 </h3>
                 <p className="mt-1.5 max-w-md text-xs leading-relaxed text-neutral-600 sm:text-sm dark:text-neutral-400">
@@ -115,8 +118,8 @@ export function BentoGrid() {
                 </p>
               </div>
 
-              <div className="relative z-10 flex items-center justify-between border-t border-neutral-100 pt-3 dark:border-neutral-800">
-                <span className="inline-flex items-center gap-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-900 transition-colors group-hover:text-neutral-600 dark:text-neutral-200 dark:group-hover:text-white">
+              <div className="relative z-10 flex items-center justify-between border-t border-neutral-100 dark:border-white/[0.06] pt-3">
+                <span className="inline-flex items-center gap-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-900 transition-colors group-hover:text-indigo-600 dark:text-neutral-200 dark:group-hover:text-indigo-400">
                   <span>স্পেসিফিকেশন ও অর্ডার</span>
                   <ArrowUpRight size={13} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </span>
@@ -126,7 +129,7 @@ export function BentoGrid() {
               </div>
 
               {/* Minimal architectural watermark */}
-              <div className="pointer-events-none absolute -bottom-4 -right-4 font-mono text-8xl font-black text-neutral-950/[0.03] select-none dark:text-white/[0.03]">
+              <div className="pointer-events-none absolute -bottom-4 -right-4 font-mono text-8xl font-black text-neutral-950/[0.03] select-none dark:text-white/[0.04]">
                 0{index + 1}
               </div>
             </motion.article>
