@@ -2,31 +2,30 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #faf9f6;
-  --foreground: #1c1917;
+  --background: #ffffff;
+  --foreground: #09090b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans), Arial, sans-serif;
+  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-hind-siliguri), var(--font-geist-sans), Arial, sans-serif;
+  font-family: var(--font-hind-siliguri), var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
   min-height: 100vh;
-  background-image: radial-gradient(circle at 1px 1px, rgb(120 113 108 / 0.13) 1px, transparent 0), radial-gradient(circle at 50% 0%, rgb(245 158 11 / 0.04), transparent 42rem), radial-gradient(circle at 72% 8%, rgb(6 182 212 / 0.05), transparent 34rem);
-  background-size: 24px 24px;
   transition: background-color 200ms ease, color 200ms ease;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 .dark body {
-  --background: #070a10;
-  --foreground: #f8fafc;
-  background-image: radial-gradient(circle at 1px 1px, rgb(34 211 238 / 0.12) 1px, transparent 0), radial-gradient(circle at 50% 0%, rgb(6 182 212 / 0.12), transparent 35rem);
+  --background: #09090b;
+  --foreground: #fafafa;
 }
 
 .dark {
@@ -38,60 +37,49 @@ html {
 }
 
 * {
-  border-color: color-mix(in srgb, currentColor 12%, transparent);
+  border-color: color-mix(in srgb, currentColor 10%, transparent);
 }
 
+/* World-Class Form Field Styling */
 .field {
   width: 100%;
   border-radius: 0.75rem;
-  border: 1px solid #eae6df;
+  border: 1px solid #e4e4e7;
   background: #ffffff;
-  color: #1c1917;
-  padding: 0.8rem 0.9rem;
+  color: #09090b;
+  padding: 0.85rem 1rem;
   font-size: 0.875rem;
+  font-weight: 500;
   outline: none;
+  transition: all 180ms ease;
 }
 
 .dark .field {
-  border-color: rgb(30 41 59 / 0.8);
-  background: #0f172a;
-  color: #f8fafc;
+  border-color: #27272a;
+  background: #121215;
+  color: #fafafa;
 }
 
 .field:focus {
-  border-color: rgb(6 182 212);
-  box-shadow: 0 0 0 3px rgb(6 182 212 / 0.3);
+  border-color: #09090b;
+  box-shadow: 0 0 0 1px #09090b;
+}
+
+.dark .field:focus {
+  border-color: #fafafa;
+  box-shadow: 0 0 0 1px #fafafa;
 }
 
 select,
 option {
-  background-color: #fffdf9 !important;
-  color: #1c1917 !important;
-}
-
-select option {
-  background-color: #fffdf9 !important;
-  color: #1c1917 !important;
-  padding: 8px 12px;
-}
-
-select option:hover,
-select option:checked {
-  background-color: #f0ece1 !important;
-  color: #0e7490 !important;
+  background-color: #ffffff !important;
+  color: #09090b !important;
 }
 
 .dark select,
-.dark option,
-.dark select option {
-  background-color: #0b0f19 !important;
-  color: #ffffff !important;
-}
-
-.dark select option:hover,
-.dark select option:checked {
-  background-color: #1e293b !important;
-  color: #38bdf8 !important;
+.dark option {
+  background-color: #121215 !important;
+  color: #fafafa !important;
 }
 
 button,

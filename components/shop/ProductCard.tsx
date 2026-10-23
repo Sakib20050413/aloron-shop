@@ -36,43 +36,43 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
 
   return (
     <motion.article
-      whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 300, damping: 24 }}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-[#eae6df] bg-[#fffdf9]/95 shadow-[0_8px_30px_rgba(60,50,40,0.04)] backdrop-blur-md transition-all duration-300 hover:border-cyan-500/60 hover:shadow-[0_16px_36px_rgba(6,182,212,0.12)] dark:border-slate-800/80 dark:bg-slate-900/90 dark:shadow-none"
+      whileHover={{ y: -5 }}
+      transition={{ type: "spring", stiffness: 350, damping: 25 }}
+      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800/80 bg-white dark:bg-[#11141b] shadow-sm hover:shadow-xl transition-all duration-300 hover:border-neutral-400 dark:hover:border-neutral-700"
     >
-      {/* Clickable Card Overlay */}
+      {/* Clickable Overlay Link */}
       <Link
         href={`/product/${product.slug || product.id}`}
         aria-label={`View details for ${product.name}`}
-        className="absolute inset-0 z-0 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500"
+        className="absolute inset-0 z-0 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 dark:focus-visible:ring-white"
       />
 
-      {/* Top Media Container */}
-      <div className={`relative flex aspect-square sm:aspect-[1.1] items-center justify-center overflow-hidden bg-gradient-to-br ${product.accent || "from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900"} p-4`}>
+      {/* Product Visual Studio Frame */}
+      <div className="relative flex aspect-[1/1] items-center justify-center overflow-hidden bg-neutral-50 dark:bg-[#0c0e14] p-5">
         <div className="relative h-full w-full flex items-center justify-center transition-transform duration-500 ease-out group-hover:scale-105">
           <ImageOrIcon
             src={product.images[0] ?? product.icon}
             alt={product.name}
             sizes="(max-width: 640px) 48vw, (max-width: 1024px) 30vw, 280px"
-            className="size-full object-contain drop-shadow-xl"
+            className="size-full object-contain drop-shadow-[0_12px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_12px_25px_rgba(0,0,0,0.5)]"
           />
         </div>
 
-        {/* Category Badge */}
-        <span className="absolute left-3 top-3 rounded-lg border border-stone-200/80 bg-white/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-slate-700 backdrop-blur-md dark:border-slate-700/80 dark:bg-slate-800/90 dark:text-cyan-400">
+        {/* Minimal Category Tag */}
+        <span className="absolute left-3 top-3 rounded-md bg-white/90 dark:bg-neutral-900/90 border border-neutral-200 dark:border-neutral-800 px-2 py-0.5 text-[9px] font-mono uppercase tracking-[0.15em] text-neutral-600 dark:text-neutral-400 backdrop-blur-sm">
           {product.category}
         </span>
 
-        {/* Dynamic Discount Pill */}
+        {/* Dynamic Discount Tag */}
         {discountPercent > 0 && (
-          <span className="absolute bottom-3 left-3 rounded-lg bg-amber-400 px-2.5 py-1 text-[10px] font-black text-slate-950 shadow-sm">
-            {discountPercent}% ছাড়
+          <span className="absolute bottom-3 left-3 rounded-md bg-neutral-950 dark:bg-white text-white dark:text-neutral-950 px-2 py-0.5 text-[10px] font-black tracking-tight shadow-sm">
+            -{discountPercent}%
           </span>
         )}
 
-        {/* Stock Alert */}
+        {/* Stock Alert Badge */}
         {product.stock > 0 && product.stock <= 15 ? (
-          <span className="absolute bottom-3 right-3 rounded-lg bg-rose-500/90 px-2 py-0.5 text-[9px] font-black text-white backdrop-blur-sm">
+          <span className="absolute bottom-3 right-3 rounded-md bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 px-2 py-0.5 text-[9px] font-bold">
             সীমিত স্টক
           </span>
         ) : null}
@@ -86,39 +86,37 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
             event.preventDefault();
             toggleWishlist(product.id);
           }}
-          className={`absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-xl border transition-all duration-200 active:scale-95 ${
+          className={`absolute right-3 top-3 z-10 grid size-8 place-items-center rounded-lg border transition-all duration-200 active:scale-95 ${
             isWishlisted
-              ? "border-rose-500/50 bg-rose-500/10 text-rose-500"
-              : "border-stone-200/80 bg-white/90 text-stone-600 hover:text-rose-500 hover:border-rose-400/50 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-300"
+              ? "border-rose-500/40 bg-rose-50 dark:bg-rose-950/40 text-rose-500"
+              : "border-neutral-200 dark:border-neutral-800 bg-white/90 dark:bg-neutral-900/90 text-neutral-500 hover:text-rose-500"
           }`}
         >
-          <Heart size={16} className={isWishlisted ? "fill-rose-500 text-rose-500" : ""} />
+          <Heart size={15} className={isWishlisted ? "fill-rose-500 text-rose-500" : ""} />
         </button>
       </div>
 
-      {/* Content & Details */}
-      <div className="relative z-10 flex flex-1 flex-col justify-between p-3.5 sm:p-5">
+      {/* Product Content & Pricing */}
+      <div className="relative z-10 flex flex-1 flex-col justify-between p-4">
         <div>
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-[.18em] text-cyan-700 dark:text-cyan-400">
-              {product.productCode}
-            </span>
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
-              <Check size={12} /> {product.stock > 0 ? "স্টকে আছে" : "স্টক শেষ"}
+          <div className="flex items-center justify-between gap-2 text-[10px] text-neutral-400 font-mono uppercase tracking-wider">
+            <span>{product.productCode}</span>
+            <span className="inline-flex items-center gap-1 font-sans text-emerald-600 dark:text-emerald-400 font-semibold">
+              <Check size={11} /> {product.stock > 0 ? "স্টকে আছে" : "স্টক শেষ"}
             </span>
           </div>
 
-          <h3 className="mt-1.5 line-clamp-2 text-sm sm:text-base font-black text-stone-900 group-hover:text-cyan-600 dark:text-white dark:group-hover:text-cyan-400 transition-colors">
+          <h3 className="mt-2 line-clamp-2 text-sm sm:text-base font-bold text-neutral-900 dark:text-white leading-snug group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">
             {product.name}
           </h3>
 
-          {/* Pricing Box */}
+          {/* Pricing */}
           <div className="mt-3 flex flex-wrap items-baseline gap-2">
-            <span className="text-lg sm:text-xl font-black text-stone-950 dark:text-white">
+            <span className="text-lg sm:text-xl font-black text-neutral-950 dark:text-white tracking-tight">
               ৳{product.sellPrice.toLocaleString("en-BD")}
             </span>
             {product.originalPrice > product.sellPrice && (
-              <del className="text-xs font-semibold text-stone-400 dark:text-slate-500">
+              <del className="text-xs font-semibold text-neutral-400">
                 ৳{product.originalPrice.toLocaleString("en-BD")}
               </del>
             )}
@@ -130,15 +128,15 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
           </div>
         </div>
 
-        {/* Action Button Row */}
-        <div className="mt-4 pt-3 border-t border-[#eae6df] dark:border-white/10 space-y-2">
+        {/* Action Buttons */}
+        <div className="mt-4 pt-3 border-t border-neutral-100 dark:border-neutral-800/80 space-y-2">
           <div className="grid grid-cols-[1fr_auto] gap-2">
             <button
               type="button"
               onClick={handleBuyNow}
-              className="flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-3 py-2 text-xs sm:text-sm font-black text-slate-950 shadow-md shadow-cyan-500/20 transition-all duration-200 hover:from-cyan-400 hover:to-cyan-500 active:scale-[0.97]"
+              className="flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 px-3 py-2 text-xs sm:text-sm font-bold shadow-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
             >
-              <Zap size={14} className="fill-slate-950" />
+              <Zap size={14} className="fill-current" />
               এখনই কিনুন
             </button>
 
@@ -148,19 +146,19 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
               rel="noreferrer"
               aria-label={`Order ${product.name} on WhatsApp`}
               onClick={(event) => event.stopPropagation()}
-              className="flex size-10 items-center justify-center rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-600 transition-all duration-200 hover:bg-emerald-500 hover:text-white active:scale-[0.97] dark:text-emerald-400"
-              title="হোয়াটসঅ্যাপে সরাসরি অর্ডার করুন"
+              className="flex size-10 items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-emerald-600 dark:text-emerald-400 transition-all duration-200 hover:bg-emerald-500 hover:text-white active:scale-[0.98]"
+              title="হোয়াটসঅ্যাপে অর্ডার করুন"
             >
-              <MessageCircle size={17} />
+              <MessageCircle size={16} />
             </a>
           </div>
 
           <button
             type="button"
             onClick={handleAddToCart}
-            className="w-full flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-stone-300/80 bg-white/80 py-1.5 text-xs font-bold text-stone-700 transition-all duration-200 hover:border-cyan-500 hover:bg-cyan-50 hover:text-cyan-700 active:scale-[0.98] dark:border-white/10 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-cyan-950/30 dark:hover:text-cyan-300"
+            className="w-full flex min-h-9 items-center justify-center gap-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-transparent py-1.5 text-xs font-semibold text-neutral-700 dark:text-neutral-300 transition-all duration-200 hover:border-neutral-400 dark:hover:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-neutral-900 active:scale-[0.98]"
           >
-            <ShoppingBag size={14} />
+            <ShoppingBag size={13} />
             কার্টে যোগ করুন
           </button>
         </div>

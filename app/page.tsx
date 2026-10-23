@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Cable, Headphones, Package, Watch, Zap } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Cable, Headphones, Package, Watch, Zap } from "lucide-react";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { HeroBanner } from "@/components/shop/HeroBanner";
@@ -10,11 +10,11 @@ import { TrustSection } from "@/components/shop/TrustSection";
 import { getStoreProducts } from "@/lib/catalog-server";
 import { prisma } from "@/lib/prisma";
 
-const categoryMeta: Record<string, { icon: typeof Zap; gradient: string; labelBn: string }> = {
-  "SMART GADGET": { icon: Watch, gradient: "from-cyan-600 via-sky-600 to-blue-600", labelBn: "স্মার্ট গ্যাজেট" },
-  "CHARGER": { icon: Zap, gradient: "from-amber-500 via-orange-500 to-rose-500", labelBn: "ফাস্ট চার্জার" },
-  "AUDIO": { icon: Headphones, gradient: "from-teal-600 via-emerald-600 to-green-600", labelBn: "অডিও ও ইয়ারবাডস" },
-  "CABLE": { icon: Cable, gradient: "from-violet-600 via-purple-600 to-fuchsia-600", labelBn: "ক্যাবল ও অ্যাক্সেসরিজ" },
+const categoryMeta: Record<string, { icon: typeof Zap; sku: string; labelBn: string }> = {
+  "SMART GADGET": { icon: Watch, sku: "CAT // WCH", labelBn: "স্মার্ট গ্যাজেট" },
+  "CHARGER": { icon: Zap, sku: "CAT // CHG", labelBn: "ফাস্ট চার্জার" },
+  "AUDIO": { icon: Headphones, sku: "CAT // AUD", labelBn: "অডিও ও ইয়ারবাডস" },
+  "CABLE": { icon: Cable, sku: "CAT // CBL", labelBn: "ক্যাবল ও অ্যাক্সেসরিজ" },
 };
 
 export default async function Home() {
@@ -45,21 +45,22 @@ export default async function Home() {
         <BentoGrid />
 
         {/* Category Explorer Grid */}
-        <section className="mx-auto max-w-7xl px-5 pb-16 lg:px-8 lg:pb-24">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8 lg:pb-24">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-neutral-800">
             <div>
-              <p className="text-xs sm:text-sm font-bold uppercase tracking-[.2em] text-cyan-600 dark:text-cyan-400">
-                আপনার প্রয়োজন অনুযায়ী
-              </p>
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-stone-950 sm:text-4xl dark:text-white">
+              <div className="font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                DISCOVER BY HARDWARE CATEGORY
+              </div>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl dark:text-white">
                 ক্যাটাগরি অনুযায়ী গ্যাজেট বেছে নিন
               </h2>
             </div>
             <Link
               href="/products"
-              className="text-xs sm:text-sm font-bold text-cyan-700 hover:text-cyan-600 dark:text-cyan-400"
+              className="group inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-900 transition-colors hover:text-neutral-600 dark:text-neutral-100 dark:hover:text-neutral-400"
             >
-              সব ক্যাটাগরি দেখুন →
+              <span>সব কালেকশন এক্সপ্লোর করুন</span>
+              <ArrowUpRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </Link>
           </div>
 
@@ -67,7 +68,7 @@ export default async function Home() {
             {categories.map((name) => {
               const meta = categoryMeta[name] ?? {
                 icon: Package,
-                gradient: "from-blue-600 to-cyan-600",
+                sku: "CAT // GEN",
                 labelBn: name,
               };
               const Icon = meta.icon;
@@ -77,18 +78,27 @@ export default async function Home() {
                 <Link
                   key={name}
                   href={`/products?category=${encodeURIComponent(name)}`}
-                  className={`group relative overflow-hidden rounded-3xl border border-white/15 bg-gradient-to-br ${meta.gradient} p-6 text-white shadow-lg transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-cyan-500/20`}
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-neutral-200/90 bg-white p-5 shadow-sm transition-all duration-300 hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900/60 dark:hover:border-neutral-700"
                 >
                   <div className="flex items-center justify-between">
-                    <Icon className="opacity-90 transition-transform duration-300 group-hover:scale-110" size={32} aria-hidden="true" />
-                    <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold backdrop-blur-sm">
-                      {count}টি পণ্য
+                    <div className="grid size-10 place-items-center rounded-lg border border-neutral-200 bg-neutral-100 text-neutral-900 transition-colors group-hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100">
+                      <Icon size={18} aria-hidden="true" />
+                    </div>
+                    <span className="font-mono text-[10px] font-semibold text-neutral-500 dark:text-neutral-400">
+                      {count} ITEMS
                     </span>
                   </div>
-                  <div className="mt-12">
-                    <p className="text-xl font-black">{meta.labelBn}</p>
-                    <p className="mt-1 text-xs text-white/80 flex items-center gap-1 font-semibold">
-                      কালেকশন দেখুন <ArrowRight className="transition-transform group-hover:translate-x-1" size={14} aria-hidden="true" />
+
+                  <div className="mt-8">
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                      {meta.sku}
+                    </span>
+                    <p className="mt-1 text-base font-bold text-neutral-950 transition-colors group-hover:text-neutral-700 dark:text-white dark:group-hover:text-neutral-200">
+                      {meta.labelBn}
+                    </p>
+                    <p className="mt-3 inline-flex items-center gap-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-600 transition-colors group-hover:text-neutral-950 dark:text-neutral-400 dark:group-hover:text-white">
+                      <span>কালেকশন ভিউ</span>
+                      <ArrowRight size={12} className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
                     </p>
                   </div>
                 </Link>

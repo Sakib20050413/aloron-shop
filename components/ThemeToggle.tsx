@@ -11,12 +11,30 @@ export function ThemeToggle({ mobile = false }: { mobile?: boolean }) {
       onClick={toggleTheme}
       aria-label="থিম পরিবর্তন করুন (Light / Dark Mode)"
       title="থিম পরিবর্তন করুন (Light / Dark Mode)"
-      className={mobile
-        ? "flex min-h-11 w-full items-center justify-between rounded-xl bg-white/10 p-1 text-sm font-bold text-white transition-colors duration-200 hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-cyan-400"
-        : "inline-flex h-10 items-center gap-1 rounded-full border border-stone-200/80 bg-stone-100/80 p-1 text-xs font-bold text-stone-600 transition-colors duration-200 hover:border-cyan-400/60 focus-visible:ring-2 focus-visible:ring-cyan-400 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-300"}
+      className={
+        mobile
+          ? "flex min-h-11 w-full items-center justify-between rounded-xl bg-neutral-100 dark:bg-neutral-900 p-1.5 text-sm font-bold text-neutral-900 dark:text-neutral-100 transition-colors"
+          : "inline-flex h-10 items-center gap-1 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100/80 dark:bg-neutral-900/80 p-1 text-xs font-semibold text-neutral-600 dark:text-neutral-300 transition-colors"
+      }
     >
-      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 transition-colors duration-200 ${theme === "light" ? "bg-white text-stone-900 shadow-sm" : "text-stone-500 dark:text-slate-400"}`}><Sun size={14} aria-hidden="true" /> দিন</span>
-      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1.5 transition-colors duration-200 ${theme === "dark" ? "bg-slate-950 text-white shadow-sm" : "text-stone-500"}`}><Moon size={14} aria-hidden="true" /> রাত</span>
+      <span
+        className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 transition-all duration-200 ${
+          theme === "light"
+            ? "bg-white text-neutral-950 font-bold shadow-sm"
+            : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
+        }`}
+      >
+        <Sun size={13} aria-hidden="true" /> দিন
+      </span>
+      <span
+        className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 transition-all duration-200 ${
+          theme === "dark"
+            ? "bg-neutral-800 text-white font-bold shadow-sm"
+            : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-200"
+        }`}
+      >
+        <Moon size={13} aria-hidden="true" /> রাত
+      </span>
     </button>
   );
 }

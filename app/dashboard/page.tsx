@@ -67,34 +67,38 @@ export default async function DashboardPage() {
   return (
     <>
       <Navbar />
-      <main className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
-        <header className="flex flex-wrap items-end justify-between gap-4">
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+        <header className="flex flex-wrap items-end justify-between gap-4 border-b border-neutral-200/80 pb-6 dark:border-neutral-800">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[.2em] text-cyan-600">Customer space</p>
-            <h1 className="mt-2 text-4xl font-black text-slate-950 dark:text-white">
-              স্বাগতম, {user.name || "সম্মানিত গ্রাহক"}
+            <div className="font-mono text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+              CUSTOMER ACCOUNT PORTAL
+            </div>
+            <h1 className="mt-2 text-2xl font-bold tracking-tight text-neutral-950 sm:text-3xl dark:text-white">
+              স্বাগতম, {user.name || "গ্রাহক"}
             </h1>
-            <span className="mt-3 inline-block rounded-full border border-slate-200 px-3 py-1 text-xs font-bold text-slate-500 dark:border-white/10">
+            <span className="mt-2 inline-block rounded-md border border-neutral-200 bg-neutral-100 px-2.5 py-0.5 font-mono text-xs text-neutral-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
               {user.email}
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2.5">
             {session.user.role === "ADMIN" && (
               <Link
                 href="/admin"
-                className="rounded-xl bg-cyan-500 px-4 py-3 text-sm font-black text-slate-950 shadow-[0_0_16px_rgba(6,182,212,0.25)] transition hover:bg-cyan-300 active:scale-[0.97]"
+                className="inline-flex items-center rounded-lg bg-neutral-900 px-4 py-2 font-mono text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
               >
-                🛡️ অ্যাডমিন প্যানেল (Admin Panel)
+                🛡️ অ্যাডমিন প্যানেল
               </Link>
             )}
             <LogoutButton />
           </div>
         </header>
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
           <Kpi label="মোট অর্ডার সংখ্যা" value={String(serializedOrders.length)} />
-          <Kpi label="মোট খরচ (BDT)" value={`৳${total.toLocaleString("en-BD")}`} />
+          <Kpi label="মোট ব্যয় (BDT)" value={`৳${total.toLocaleString("en-BD")}`} />
           <Kpi label="পেন্ডিং ডেলিভারি" value={String(pending)} />
         </div>
+
         <DashboardClient
           profile={{
             name: user.name,
@@ -112,9 +116,9 @@ export default async function DashboardPage() {
 
 function Kpi({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-slate-200 p-5 shadow-sm dark:border-white/10">
-      <p className="text-sm text-slate-500">{label}</p>
-      <p className="mt-2 text-2xl font-black text-slate-950 dark:text-white">{value}</p>
+    <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm dark:border-neutral-800 dark:bg-neutral-900/60">
+      <p className="font-mono text-xs text-neutral-500 dark:text-neutral-400">{label}</p>
+      <p className="mt-2 font-mono text-2xl font-bold text-neutral-950 dark:text-white">{value}</p>
     </div>
   );
 }

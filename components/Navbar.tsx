@@ -42,7 +42,6 @@ export function Navbar() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [activeResult, setActiveResult] = useState(0);
-  const [logoFailed, setLogoFailed] = useState(false);
   const [products, setProducts] = useState<CatalogProduct[]>(catalogProducts);
   const [siteSettings, setSiteSettings] = useState(defaultSettings);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -107,37 +106,42 @@ export function Navbar() {
 
   return (
     <>
-      {/* Announcement Bar */}
-      <div className="bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-600 px-4 py-1.5 text-center text-xs font-semibold text-white tracking-wide shadow-inner">
+      {/* Editorial Announcement Bar */}
+      <div className="bg-neutral-950 dark:bg-black border-b border-neutral-800/80 px-4 py-2 text-center text-xs font-medium text-neutral-300 dark:text-neutral-400 tracking-wide">
         <div className="mx-auto flex max-w-7xl items-center justify-center gap-2">
-          <span>📢</span>
+          <span className="inline-block size-1.5 rounded-full bg-emerald-400" />
           <span>{siteSettings.noticeText || "ঢাকা থেকে সারাদেশে দ্রুততম হোম ডেলিভারি | হটলাইন: ০১৬১৫৮৬৯৭২৪"}</span>
         </div>
       </div>
       
       {/* Desktop Header */}
-      <header className="sticky top-0 z-50 border-b border-[#eae6df] bg-[#fbf9f5]/95 backdrop-blur-xl dark:border-white/10 dark:bg-[#080c14]/95">
+      <header className="sticky top-0 z-50 border-b border-neutral-200/80 bg-white/90 backdrop-blur-xl dark:border-neutral-800/80 dark:bg-[#09090b]/90">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2 font-black tracking-tight text-stone-900 dark:text-white">
-            {!logoFailed ? (
-              <Image src="/logo.png" alt="Aloron Shop" width={32} height={32} onError={() => setLogoFailed(true)} />
-            ) : (
-              <ShoppingBag size={24} className="text-cyan-600" />
-            )}
-            <span className="hidden sm:inline">Aloron</span>
+          <Link href="/" className="flex items-center gap-2.5 tracking-tight group">
+            <span className="grid size-9 place-items-center rounded-xl bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-black text-sm shadow-sm transition-transform group-hover:scale-105">
+              A
+            </span>
+            <div className="flex flex-col">
+              <span className="text-base font-black tracking-tight text-neutral-950 dark:text-white leading-none">
+                ALORON
+              </span>
+              <span className="text-[10px] font-bold text-neutral-500 tracking-wider">
+                আলোড়ন শপ
+              </span>
+            </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1 text-sm font-bold text-stone-700 dark:text-slate-300">
-            <Link href="/products" className="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-cyan-700 dark:hover:bg-white/10">শপ ও ক্যাটাগরি</Link>
-            <Link href="/#trending" className="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-cyan-700 dark:hover:bg-white/10">ট্রেন্ডিং গেজেট</Link>
-            <Link href="/track" className="rounded-lg px-3 py-2 transition hover:bg-stone-100 hover:text-cyan-700 dark:hover:bg-white/10">অর্ডার ট্র্যাক করুন</Link>
+          <nav className="hidden md:flex items-center gap-1 text-sm font-semibold text-neutral-600 dark:text-neutral-300">
+            <Link href="/products" className="rounded-lg px-3 py-2 transition hover:bg-neutral-100 hover:text-neutral-950 dark:hover:bg-white/10 dark:hover:text-white">সব গ্যাজেট</Link>
+            <Link href="/#trending" className="rounded-lg px-3 py-2 transition hover:bg-neutral-100 hover:text-neutral-950 dark:hover:bg-white/10 dark:hover:text-white">হিট কালেকশন</Link>
+            <Link href="/track" className="rounded-lg px-3 py-2 transition hover:bg-neutral-100 hover:text-neutral-950 dark:hover:bg-white/10 dark:hover:text-white">অর্ডার ট্র্যাক</Link>
           </nav>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsSearchOpen(true)}
               aria-label="সার্চ করুন"
-              className="h-10 w-10 flex items-center justify-center rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all"
+              className="h-10 w-10 flex items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-600 text-neutral-700 dark:text-neutral-300 transition-all"
             >
               <Search size={18} />
             </button>
@@ -145,7 +149,7 @@ export function Navbar() {
             <Link
               href="/wishlist"
               aria-label="উইশলিস্ট"
-              className="relative hidden md:flex h-10 w-10 items-center justify-center rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all"
+              className="relative hidden md:flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-600 text-neutral-700 dark:text-neutral-300 transition-all"
             >
               <Heart size={18} />
               {wishlistCount > 0 && (
@@ -158,11 +162,11 @@ export function Navbar() {
             <button
               onClick={() => setIsCartOpen(true)}
               aria-label="কার্ট দেখুন"
-              className="relative h-10 px-3 flex items-center gap-2 rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all"
+              className="relative h-10 px-3 flex items-center gap-2 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-600 text-neutral-800 dark:text-neutral-200 transition-all"
             >
               <ShoppingBag size={18} />
               {cartCount > 0 && (
-                <span className="grid size-5 place-items-center rounded-full bg-cyan-500 text-[10px] font-black text-slate-950">
+                <span className="grid size-5 place-items-center rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 text-[10px] font-black">
                   {cartCount}
                 </span>
               )}
@@ -172,14 +176,14 @@ export function Navbar() {
               session.user?.role === "ADMIN" ? (
                 <Link
                   href="/admin"
-                  className="hidden md:flex h-10 px-4 rounded-xl font-bold bg-cyan-600 hover:bg-cyan-500 text-white items-center gap-1.5 transition-all text-xs"
+                  className="hidden md:flex h-10 px-4 rounded-xl font-bold bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 hover:opacity-90 items-center gap-1.5 transition-all text-xs shadow-sm"
                 >
-                  🛡️ অ্যাডমিন প্যানেল
+                  🛡️ অ্যাডমিন
                 </Link>
               ) : (
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="h-10 px-3.5 flex items-center gap-1.5 rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 hover:border-cyan-500/50 text-stone-700 dark:text-slate-300 transition-all text-xs font-semibold"
+                  className="h-10 px-3.5 flex items-center gap-1.5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 hover:border-neutral-400 dark:hover:border-neutral-600 text-neutral-700 dark:text-neutral-300 transition-all text-xs font-semibold"
                 >
                   <UserRound size={18} />
                   <span className="hidden lg:inline max-w-[80px] truncate">{session.user?.name || "অ্যাকাউন্ট"}</span>
@@ -188,9 +192,9 @@ export function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="hidden md:flex h-10 px-4 rounded-xl font-bold bg-cyan-600 hover:bg-cyan-500 text-white items-center transition-all text-xs"
+                className="hidden md:flex h-10 px-4 rounded-xl font-bold bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 hover:opacity-90 items-center transition-all text-xs shadow-sm"
               >
-                লগইন / অ্যাকাউন্ট
+                লগইন / সাইন আপ
               </Link>
             )}
             
@@ -199,7 +203,7 @@ export function Navbar() {
             <button
               onClick={() => setIsMenuOpen(true)}
               aria-label="মেনু খুলুন"
-              className="md:hidden h-10 w-10 flex items-center justify-center rounded-xl bg-stone-100 dark:bg-slate-800/40 border border-stone-200 dark:border-slate-700/60 text-stone-700 dark:text-slate-300 transition-all"
+              className="md:hidden h-10 w-10 flex items-center justify-center rounded-xl bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-neutral-700 dark:text-neutral-300 transition-all hover:border-neutral-400 dark:hover:border-neutral-600"
             >
               <Menu size={18} />
             </button>
@@ -209,12 +213,12 @@ export function Navbar() {
         {/* User Dropdown */}
         <AnimatePresence>
           {userMenuOpen && sessionStatus === "authenticated" && (
-            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute right-4 top-16 z-50 w-48 rounded-xl border border-stone-200 bg-white p-2 shadow-lg dark:border-white/10 dark:bg-[#0b0f19]">
-              <Link href="/dashboard" className="block rounded-lg px-3 py-2 text-sm font-medium text-stone-700 transition hover:bg-stone-100 dark:text-slate-300 dark:hover:bg-white/10">আমার ড্যাশবোর্ড</Link>
+            <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute right-4 top-16 z-50 w-48 rounded-xl border border-neutral-200 bg-white p-2 shadow-xl dark:border-neutral-800 dark:bg-neutral-900">
+              <Link href="/dashboard" className="block rounded-lg px-3 py-2 text-sm font-medium text-neutral-700 transition hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800">আমার ড্যাশবোর্ড</Link>
               {session.user?.role === "ADMIN" && (
-                <Link href="/admin" className="block rounded-lg px-3 py-2 text-sm font-medium text-cyan-700 transition hover:bg-cyan-50 dark:text-cyan-300 dark:hover:bg-cyan-900/20">অ্যাডমিন প্যানেল</Link>
+                <Link href="/admin" className="block rounded-lg px-3 py-2 text-sm font-medium text-neutral-900 transition hover:bg-neutral-100 dark:text-white dark:hover:bg-neutral-800">অ্যাডমিন প্যানেল</Link>
               )}
-              <button onClick={() => { signOut({ callbackUrl: "/" }); setUserMenuOpen(false); }} className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-900/20">লগআউট</button>
+              <button onClick={() => { signOut({ callbackUrl: "/" }); setUserMenuOpen(false); }} className="w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-rose-600 transition hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950/20">লগআউট</button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -224,30 +228,35 @@ export function Navbar() {
       <AnimatePresence>
         {isMenuOpen && (
           <>
-            <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeMenu} aria-label="মেনু বন্ধ করুন" className="fixed inset-0 z-[70] bg-slate-950/60 backdrop-blur-sm md:hidden" />
-            <motion.aside initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed left-0 top-0 z-[75] h-full w-72 bg-slate-900 p-6 shadow-2xl md:hidden">
-              <div className="mb-6 flex items-center justify-between">
-                <h2 className="text-xl font-black text-white">Aloron</h2>
-                <button onClick={closeMenu} aria-label="মেনু বন্ধ করুন"><X size={24} className="text-white" /></button>
+            <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeMenu} aria-label="মেনু বন্ধ করুন" className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm md:hidden" />
+            <motion.aside initial={{ x: "-100%" }} animate={{ x: 0 }} exit={{ x: "-100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="fixed left-0 top-0 z-[75] h-full w-72 border-r border-neutral-800 bg-neutral-950 p-6 shadow-2xl md:hidden">
+              <div className="mb-6 flex items-center justify-between border-b border-neutral-800 pb-4">
+                <div className="flex items-center gap-2">
+                  <span className="grid size-7 place-items-center rounded bg-white text-xs font-black text-neutral-950">A</span>
+                  <span className="text-base font-bold tracking-tight text-white">আলোড়ন শপ</span>
+                </div>
+                <button onClick={closeMenu} aria-label="মেনু বন্ধ করুন" className="text-neutral-400 hover:text-white"><X size={20} /></button>
               </div>
               <nav className="space-y-1">
-                <Link onClick={closeMenu} href="/products" className="block rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:bg-white/10">শপ ও ক্যাটাগরি</Link>
-                <Link onClick={closeMenu} href="/#trending" className="block rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:bg-white/10">ট্রেন্ডিং গেজেট</Link>
-                <Link onClick={closeMenu} href="/track" className="block rounded-xl px-4 py-3.5 text-base font-bold text-white transition hover:bg-white/10">অর্ডার ট্র্যাক করুন</Link>
-                <a onClick={closeMenu} href="https://wa.me/8801615869724" target="_blank" rel="noreferrer" className="block rounded-xl px-4 py-3.5 text-base font-bold text-emerald-300 transition hover:bg-emerald-500/10">হোয়াটসঅ্যাপ সাপোর্ট</a>
+                <Link onClick={closeMenu} href="/products" className="block rounded-lg px-3 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-200 transition hover:bg-white/10 hover:text-white">সব গ্যাজেট</Link>
+                <Link onClick={closeMenu} href="/#trending" className="block rounded-lg px-3 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-200 transition hover:bg-white/10 hover:text-white">হিট কালেকশন</Link>
+                <Link onClick={closeMenu} href="/track" className="block rounded-lg px-3 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-200 transition hover:bg-white/10 hover:text-white">অর্ডার ট্র্যাক</Link>
+                <a onClick={closeMenu} href="https://wa.me/8801615869724" target="_blank" rel="noreferrer" className="block rounded-lg px-3 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-emerald-400 transition hover:bg-emerald-500/10">হোয়াটসঅ্যাপ সাপোর্ট</a>
                 
                 {sessionStatus === "authenticated" ? (
                   <>
                     {session.user?.role === "ADMIN" && (
-                      <Link onClick={closeMenu} href="/admin" className="block rounded-xl bg-cyan-500 px-4 py-3.5 text-base font-black text-slate-950">🛡️ অ্যাডমিন প্যানেল (Admin Panel)</Link>
+                      <Link onClick={closeMenu} href="/admin" className="block rounded-lg bg-white px-3 py-2.5 font-mono text-xs font-bold uppercase tracking-wider text-neutral-950">🛡️ অ্যাডমিন প্যানেল</Link>
                     )}
-                    <Link onClick={closeMenu} href="/dashboard" className="block rounded-xl px-4 py-3.5 text-base font-bold text-cyan-300 transition hover:bg-cyan-500/10">আমার ড্যাশবোর্ড</Link>
+                    <Link onClick={closeMenu} href="/dashboard" className="block rounded-lg px-3 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-200 transition hover:bg-white/10">আমার ড্যাশবোর্ড</Link>
                   </>
                 ) : (
-                  <Link onClick={closeMenu} href="/login" className="block rounded-xl px-4 py-3.5 text-base font-bold text-cyan-300 transition hover:bg-cyan-500/10">লগইন / অ্যাকাউন্ট</Link>
+                  <Link onClick={closeMenu} href="/login" className="block rounded-lg px-3 py-2.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-200 transition hover:bg-white/10">লগইন / রেজিস্টার</Link>
                 )}
                 
-                <ThemeToggle mobile />
+                <div className="pt-4">
+                  <ThemeToggle mobile />
+                </div>
               </nav>
             </motion.aside>
           </>
@@ -264,29 +273,29 @@ export function Navbar() {
       <AnimatePresence>
         {isSearchOpen && (
           <>
-            <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSearchOpen(false)} aria-label="সার্চ বন্ধ করুন" className="fixed inset-0 z-[80] bg-slate-950/60 backdrop-blur-sm" />
-            <motion.div initial={{ opacity: 0, y: -20, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: .98 }} role="dialog" aria-label="গেজেট সার্চ" className="fixed left-1/2 top-24 z-[90] w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 rounded-3xl border border-slate-700 bg-slate-900 p-5 shadow-2xl dark:bg-[#0b0f19]">
-              <div className="flex items-center gap-3">
-                <Search className="text-cyan-400" size={20} aria-hidden="true" />
-                <input autoFocus value={search} onChange={(event) => { setSearch(event.target.value); setActiveResult(0); }} onKeyDown={(event) => { if (event.key === "ArrowDown") { event.preventDefault(); setActiveResult((index) => Math.min(index + 1, results.length - 1)); } else if (event.key === "ArrowUp") { event.preventDefault(); setActiveResult((index) => Math.max(index - 1, 0)); } else if (event.key === "Enter") { event.preventDefault(); openResult(activeResult); } else if (event.key === "Escape") setIsSearchOpen(false); }} placeholder="গেজেট খুঁজুন…" aria-controls="search-results" aria-activedescendant={results[activeResult] ? `search-result-${results[activeResult].id}` : undefined} className="flex-1 bg-transparent text-white outline-none" />
-                <button type="button" onClick={() => setIsSearchOpen(false)} aria-label="সার্চ বন্ধ করুন"><X size={18} className="text-slate-400" /></button>
+            <motion.button initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsSearchOpen(false)} aria-label="সার্চ বন্ধ করুন" className="fixed inset-0 z-[80] bg-black/60 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0, y: -20, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -20, scale: .98 }} role="dialog" aria-label="গ্যাজেট সার্চ" className="fixed left-1/2 top-20 z-[90] w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 rounded-2xl border border-neutral-200 bg-white p-5 shadow-2xl dark:border-neutral-800 dark:bg-neutral-950">
+              <div className="flex items-center gap-3 border-b border-neutral-100 pb-3 dark:border-neutral-800">
+                <Search className="text-neutral-500" size={18} aria-hidden="true" />
+                <input autoFocus value={search} onChange={(event) => { setSearch(event.target.value); setActiveResult(0); }} onKeyDown={(event) => { if (event.key === "ArrowDown") { event.preventDefault(); setActiveResult((index) => Math.min(index + 1, results.length - 1)); } else if (event.key === "ArrowUp") { event.preventDefault(); setActiveResult((index) => Math.max(index - 1, 0)); } else if (event.key === "Enter") { event.preventDefault(); openResult(activeResult); } else if (event.key === "Escape") setIsSearchOpen(false); }} placeholder="গ্যাজেট সার্চ করুন (যেমন: QCY, GaN, টাইপ-সি)…" aria-controls="search-results" aria-activedescendant={results[activeResult] ? `search-result-${results[activeResult].id}` : undefined} className="flex-1 bg-transparent font-mono text-sm text-neutral-900 outline-none placeholder:text-neutral-400 dark:text-white" />
+                <button type="button" onClick={() => setIsSearchOpen(false)} aria-label="সার্চ বন্ধ করুন" className="text-neutral-400 hover:text-neutral-900 dark:hover:text-white"><X size={18} /></button>
               </div>
-              <div id="search-results" role="listbox" className="mt-4 max-h-80 space-y-2 overflow-y-auto">
+              <div id="search-results" role="listbox" className="mt-3 max-h-80 space-y-1.5 overflow-y-auto">
                 {results.length ? results.map((product, index) => (
-                  <Link onMouseEnter={() => setActiveResult(index)} onClick={() => setIsSearchOpen(false)} id={`search-result-${product.id}`} role="option" aria-selected={activeResult === index} key={product.id} href={`/product/${product.slug || product.id}`} className={`flex items-center gap-3 rounded-xl p-3 text-white transition hover:bg-slate-800 ${activeResult === index ? "bg-slate-800" : ""}`}>
-                    <span className={`grid size-11 shrink-0 place-items-center overflow-hidden rounded-lg bg-gradient-to-br ${product.accent} text-2xl`}>
-                      {product.images[0]?.startsWith("/") ? <Image src={product.images[0]} alt="" width={44} height={44} sizes="44px" /> : product.icon}
+                  <Link onMouseEnter={() => setActiveResult(index)} onClick={() => setIsSearchOpen(false)} id={`search-result-${product.id}`} role="option" aria-selected={activeResult === index} key={product.id} href={`/product/${product.slug || product.id}`} className={`flex items-center gap-3 rounded-xl p-2.5 transition ${activeResult === index ? "bg-neutral-100 dark:bg-neutral-900" : "hover:bg-neutral-50 dark:hover:bg-neutral-900/60"}`}>
+                    <span className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-lg border border-neutral-200 bg-white p-1 text-xl dark:border-neutral-700 dark:bg-neutral-800">
+                      {product.images[0]?.startsWith("/") ? <Image src={product.images[0]} alt="" width={40} height={40} sizes="40px" className="size-full object-contain" /> : product.icon}
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate font-bold">{highlightMatch(product.name, debouncedSearch)}</span>
-                      <span className="mt-1 inline-flex rounded-full bg-cyan-400/15 px-2 py-0.5 text-[10px] font-bold text-cyan-300">{product.productCode}</span>
+                      <span className="block truncate text-xs font-bold text-neutral-900 dark:text-white">{highlightMatch(product.name, debouncedSearch)}</span>
+                      <span className="font-mono text-[10px] text-neutral-500">{product.productCode}</span>
                     </span>
                     <span className="text-right">
-                      <span className="block font-bold">৳{product.sellPrice.toLocaleString("bn-BD")}</span>
-                      <span className={`text-[10px] font-semibold ${product.stock > 0 ? "text-emerald-300" : "text-rose-300"}`}>{product.stock > 0 ? "স্টকে আছে" : "স্টক শেষ"}</span>
+                      <span className="block font-mono text-xs font-bold text-neutral-900 dark:text-white">৳{product.sellPrice.toLocaleString("en-BD")}</span>
+                      <span className={`font-mono text-[10px] ${product.stock > 0 ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>{product.stock > 0 ? "স্টকে আছে" : "স্টক শেষ"}</span>
                     </span>
                   </Link>
-                )) : <p className="p-4 text-sm text-slate-400">কোনো গেজেট পাওয়া যায়নি</p>}
+                )) : <p className="p-4 text-center font-mono text-xs text-neutral-400">কোনো গ্যাজেট পাওয়া যায়নি</p>}
               </div>
             </motion.div>
           </>

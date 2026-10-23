@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { ArrowLeft, LoaderCircle, LockKeyhole, ShieldCheck } from "lucide-react";
@@ -31,7 +30,7 @@ export default function LoginForm({ googleConfigured }: { googleConfigured: bool
       callbackUrl: isOwnerAdmin || role === "admin" ? "/admin" : "/dashboard",
     });
     if (result?.error) {
-      setError("Email or password is incorrect.");
+      setError("ইমেইল অথবা পাসওয়ার্ড সঠিক নয়।");
       setLoading(false);
     } else if (result?.url) {
       window.location.href = result.url;
@@ -47,39 +46,102 @@ export default function LoginForm({ googleConfigured }: { googleConfigured: bool
   };
 
   return (
-    <main className="grid min-h-screen place-items-center bg-[#fbf9f5] px-5 py-12 text-stone-900 transition-colors duration-200 dark:bg-[#080C14] dark:text-white">
+    <main className="grid min-h-screen place-items-center bg-white px-4 py-12 text-neutral-900 transition-colors duration-200 dark:bg-neutral-950 dark:text-white">
       <div className="w-full max-w-md">
-        <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm text-stone-600 hover:text-cyan-700 dark:text-slate-400 dark:hover:text-cyan-300">
-          <ArrowLeft size={16} /> আলোড়নে ফিরে যান
+        <Link
+          href="/"
+          className="mb-6 inline-flex items-center gap-1.5 font-mono text-xs font-semibold uppercase tracking-wider text-neutral-500 transition-colors hover:text-neutral-900 dark:hover:text-white"
+        >
+          <ArrowLeft size={14} />
+          <span>আলোড়নে ফিরে যান</span>
         </Link>
-        <section className="rounded-3xl border border-[#eae6df] bg-[#fffdf9] p-7 shadow-[0_8px_30px_rgba(60,50,40,0.04)] transition-colors duration-200 dark:border-slate-800/80 dark:bg-[#0F172A]">
-          <div className="mb-7 flex items-center gap-3">
-            <Image src="/logo.png" alt="আলোড়ন অনলাইন শপিং" width={168} height={48} priority className="h-11 w-auto object-contain" />
-            <div><p className="font-black">আলোড়ন অনলাইন শপিং</p><p className="text-xs text-slate-400">নিরাপদ অ্যাকাউন্ট প্রবেশ</p></div>
+        <section className="rounded-2xl border border-neutral-200 bg-white p-7 shadow-sm transition-colors duration-200 dark:border-neutral-800 dark:bg-neutral-900">
+          <div className="mb-6 flex items-center gap-3">
+            <span className="grid size-9 place-items-center rounded-xl bg-neutral-950 text-white dark:bg-white dark:text-neutral-950 font-black text-sm">
+              A
+            </span>
+            <div>
+              <p className="font-bold text-neutral-950 dark:text-white">আলোড়ন অনলাইন শপিং</p>
+              <p className="font-mono text-xs text-neutral-500">SECURE PORTAL LOGIN</p>
+            </div>
           </div>
-          <div className="grid grid-cols-2 rounded-xl bg-[#efebe3] p-1 dark:bg-black/20">
-            <button type="button" onClick={() => setRole("customer")} className={`rounded-lg px-3 py-2 text-sm font-semibold transition duration-150 active:scale-95 ${role === "customer" ? "bg-white text-stone-900 shadow-sm" : "text-stone-500 hover:text-stone-700 dark:text-slate-400 dark:hover:text-slate-200"}`}>কাস্টমার</button>
-            <button type="button" onClick={() => setRole("admin")} className={`rounded-lg px-3 py-2 text-sm font-semibold transition duration-150 active:scale-95 ${role === "admin" ? "bg-white text-stone-900 shadow-sm" : "text-stone-500 hover:text-stone-700 dark:text-slate-400 dark:hover:text-slate-200"}`}>অ্যাডমিন</button>
+
+          <div className="grid grid-cols-2 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800">
+            <button
+              type="button"
+              onClick={() => setRole("customer")}
+              className={`rounded-md px-3 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition duration-150 ${
+                role === "customer"
+                  ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-900 dark:text-white"
+                  : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+              }`}
+            >
+              কাস্টমার
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("admin")}
+              className={`rounded-md px-3 py-1.5 font-mono text-xs font-semibold uppercase tracking-wider transition duration-150 ${
+                role === "admin"
+                  ? "bg-white text-neutral-900 shadow-sm dark:bg-neutral-900 dark:text-white"
+                  : "text-neutral-500 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+              }`}
+            >
+              অ্যাডমিন
+            </button>
           </div>
-          <form onSubmit={submit} className="mt-6 space-y-4">
-            <label className="block text-sm font-semibold text-stone-700 dark:text-slate-300">ইমেইল
-              <input required name="email" autoComplete="email" type="email" spellCheck={false} className="field mt-2" placeholder="আপনার ইমেইল…" />
-            </label>
-            <label className="block text-sm font-semibold text-stone-700 dark:text-slate-300">পাসওয়ার্ড
-              <input required name="password" autoComplete="current-password" type="password" className="field mt-2" placeholder="পাসওয়ার্ড লিখুন…" />
-            </label>
-            {error && <p aria-live="polite" className="text-sm text-rose-600 dark:text-rose-300">{error}</p>}
-            <button disabled={loading} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-cyan-600 px-5 py-3.5 text-sm font-semibold text-white shadow-md shadow-cyan-500/20 transition duration-150 hover:from-cyan-600 hover:to-cyan-700 active:scale-95 disabled:cursor-wait disabled:opacity-60">{loading ? <LoaderCircle size={16} className="animate-spin" /> : <LockKeyhole size={16} />} {loading ? "লগইন হচ্ছে…" : "লগইন করুন"}</button>
+
+          <form onSubmit={submit} className="mt-5 space-y-4">
+            <div>
+              <label className="block font-mono text-xs font-semibold text-neutral-700 dark:text-neutral-300">
+                ইমেইল এড্রেস
+              </label>
+              <input required name="email" autoComplete="email" type="email" spellCheck={false} className="field mt-1.5" placeholder="name@domain.com…" />
+            </div>
+            <div>
+              <label className="block font-mono text-xs font-semibold text-neutral-700 dark:text-neutral-300">
+                পাসওয়ার্ড
+              </label>
+              <input required name="password" autoComplete="current-password" type="password" className="field mt-1.5" placeholder="••••••••" />
+            </div>
+            {error && (
+              <p aria-live="polite" className="rounded-lg border border-rose-300 bg-rose-50 p-2.5 font-mono text-xs text-rose-700 dark:border-rose-900 dark:bg-rose-950/30 dark:text-rose-300">
+                {error}
+              </p>
+            )}
+            <button
+              disabled={loading}
+              className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-neutral-900 px-5 py-3 font-mono text-xs font-bold uppercase tracking-wider text-white shadow-sm transition hover:bg-neutral-800 active:scale-95 disabled:opacity-60 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
+            >
+              {loading ? <LoaderCircle size={15} className="animate-spin" /> : <LockKeyhole size={15} />}
+              <span>{loading ? "লগইন হচ্ছে…" : "লগইন করুন"}</span>
+            </button>
           </form>
-          <button disabled={loading} onClick={googleLogin} className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-stone-200 bg-white px-5 py-3 text-sm font-bold text-stone-700 shadow-sm transition duration-150 hover:bg-stone-50 active:scale-95 disabled:opacity-60 dark:border-slate-700/80 dark:bg-slate-800/50 dark:text-slate-200 dark:hover:bg-slate-800"><span aria-hidden="true" className="text-base font-black text-[#4285F4]">G</span> গুগল দিয়ে সাইন ইন</button>
-          {googleUnavailable && <p aria-live="polite" className="mt-3 rounded-xl border border-amber-300/40 bg-amber-50 p-3 text-sm leading-6 text-amber-800 dark:border-amber-300/20 dark:bg-amber-300/10 dark:text-amber-100">গুগল লগইন চালুর জন্য গুগল ক্লাউড কনসোল থেকে Client ID কনফিগার করুন।</p>}
-          <div className="mt-5 text-center text-sm text-stone-600 dark:text-slate-400">
+
+          <button
+            disabled={loading}
+            onClick={googleLogin}
+            className="mt-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white px-5 py-2.5 font-mono text-xs font-semibold text-neutral-800 shadow-sm transition hover:bg-neutral-50 active:scale-95 disabled:opacity-60 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700"
+          >
+            <span aria-hidden="true" className="text-base font-black text-[#4285F4]">G</span>
+            <span>গুগল দিয়ে সাইন ইন</span>
+          </button>
+          {googleUnavailable && (
+            <p aria-live="polite" className="mt-3 rounded-lg border border-amber-300/40 bg-amber-50 p-2.5 text-xs text-amber-800 dark:border-amber-300/20 dark:bg-amber-950/20 dark:text-amber-200">
+              গুগল লগইন চালুর জন্য গুগল ক্লাউড কনসোল থেকে Client ID কনফিগার করুন।
+            </p>
+          )}
+
+          <div className="mt-5 text-center text-xs text-neutral-600 dark:text-neutral-400">
             নতুন কাস্টমার?{" "}
-            <Link href="/register" className="font-bold text-cyan-600 underline-offset-4 hover:underline dark:text-cyan-400">
+            <Link href="/register" className="font-semibold text-neutral-900 underline-offset-4 hover:underline dark:text-white">
               নতুন অ্যাকাউন্ট তৈরি করুন
             </Link>
           </div>
-          <p className="mt-5 flex gap-2 text-xs leading-5 text-slate-400"><ShieldCheck size={15} className="shrink-0 text-cyan-400" /> নিরাপদ লগইন · অনুমোদিত অ্যাকাউন্টের জন্য সীমিত অ্যাক্সেস</p>
+          <p className="mt-5 flex items-center justify-center gap-1.5 font-mono text-[11px] text-neutral-500">
+            <ShieldCheck size={13} className="text-emerald-500" />
+            <span>নিরাপদ এনক্রিপ্টেড সেশন</span>
+          </p>
         </section>
       </div>
     </main>

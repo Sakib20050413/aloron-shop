@@ -5,7 +5,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, AlertTriangle, Info } from "lucide-react";
 
 type ToastType = "success" | "error" | "info";
-interface ToastMessage { id: string; type: ToastType; message: string; action?: { label: string; href: string } }
+interface ToastMessage {
+  id: string;
+  type: ToastType;
+  message: string;
+  action?: { label: string; href: string };
+}
 
 const ToastContext = createContext<{ showToast: (msg: Omit<ToastMessage, "id">) => void } | null>(null);
 
@@ -29,12 +34,25 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       <div className="pointer-events-none fixed bottom-24 left-1/2 z-[100] flex w-full max-w-sm -translate-x-1/2 flex-col gap-2 px-4 md:bottom-8 md:left-auto md:right-8 md:translate-x-0">
         <AnimatePresence>
           {toasts.map((toast) => (
-            <motion.div key={toast.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 20 }} className="pointer-events-auto flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-lg dark:border-white/10 dark:bg-[#0B0F19]">
-              {toast.type === "success" && <CheckCircle2 size={18} className="text-emerald-500" />}
-              {toast.type === "error" && <AlertTriangle size={18} className="text-rose-500" />}
-              {toast.type === "info" && <Info size={18} className="text-cyan-500" />}
-              <span className="flex-1 text-sm font-medium text-slate-900 dark:text-white">{toast.message}</span>
-              {toast.action && <a href={toast.action.href} className="text-xs font-bold text-cyan-600 hover:underline dark:text-cyan-400">{toast.action.label}</a>}
+            <motion.div
+              key={toast.id}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 16 }}
+              className="pointer-events-auto flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-3.5 shadow-xl dark:border-neutral-800 dark:bg-neutral-900"
+            >
+              {toast.type === "success" && <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />}
+              {toast.type === "error" && <AlertTriangle size={16} className="text-rose-500 shrink-0" />}
+              {toast.type === "info" && <Info size={16} className="text-neutral-700 dark:text-neutral-300 shrink-0" />}
+              <span className="flex-1 text-xs font-semibold text-neutral-900 dark:text-white">{toast.message}</span>
+              {toast.action && (
+                <a
+                  href={toast.action.href}
+                  className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-900 underline underline-offset-4 hover:opacity-80 dark:text-white"
+                >
+                  {toast.action.label}
+                </a>
+              )}
             </motion.div>
           ))}
         </AnimatePresence>
